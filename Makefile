@@ -33,4 +33,4 @@ install:
 
 clean:
 	go clean -x -i ./...
-	rm -rf coverage.txt $(EXECUTABLE) $(DIST) vendor $(DEPLOY_WEBHOOK_IMAGE)
+	find . -name "coverage.txt" -delete
