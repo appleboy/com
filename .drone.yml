@@ -1,0 +1,18 @@
+workspace:
+  base: /srv/app
+  path: src/github.com/appleboy/com
+
+pipeline:
+  test:
+    image: appleboy/golang-testing
+    pull: true
+    environment:
+      TAGS: netgo
+      GOPATH: /srv/app
+    commands:
+      - make dep_install
+      - make vet
+      - make lint
+      - make test
+    when:
+      event: [ push, tag, pull_request ]
