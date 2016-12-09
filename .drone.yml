@@ -1,14 +1,11 @@
 workspace:
-  base: /srv/app
+  base: /go
   path: src/github.com/appleboy/com
 
 pipeline:
   test:
     image: appleboy/golang-testing
     pull: true
-    environment:
-      TAGS: netgo
-      GOPATH: /srv/app
     commands:
       - make install
       - make vet
