@@ -10,6 +10,10 @@ pipeline:
       - make install
       - make vet
       - make lint
-      - make test
+      - coverage all
+      # send coverage report
+      - curl -s https://codecov.io/bash > .codecov &&
+        chmod +x .codecov &&
+        ./.codecov -t ${CODECOV_TOKEN} -f .cover/coverage.txt
     when:
       event: [ push, tag, pull_request ]
