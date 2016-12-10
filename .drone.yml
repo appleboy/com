@@ -4,7 +4,7 @@ workspace:
 
 pipeline:
   test:
-    image: appleboy/golang-testing
+    image: appleboy/golang-testing:${GO_VERSION}
     pull: true
     commands:
       - make install
@@ -17,3 +17,9 @@ pipeline:
         ./.codecov -t ${CODECOV_TOKEN} -f .cover/coverage.txt
     when:
       event: [ push, tag, pull_request ]
+      matrix:
+        GO_VERSION: 1.7.4
+matrix:
+  GO_VERSION:
+    - 1.7.4
+    - 1.6.4
