@@ -1,6 +1,5 @@
 workspace:
-  base: /go
-  path: src/github.com/appleboy/com
+  path: /go/src/github.com/appleboy/com
 
 pipeline:
   test:
@@ -17,8 +16,7 @@ pipeline:
         ./.codecov -t ${CODECOV_TOKEN} -f .cover/coverage.txt
     when:
       event: [ push, tag, pull_request ]
-      matrix:
-        GO_VERSION: 1.7.4
+
 matrix:
   GO_VERSION:
     - 1.7.4
