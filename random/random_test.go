@@ -1,11 +1,11 @@
-package rand
+package random
 
 import "testing"
 
 func TestStringWithCharset(t *testing.T) {
 	type args struct {
 		length  int
-		charset string
+		charset Charset
 	}
 	tests := []struct {
 		name string
