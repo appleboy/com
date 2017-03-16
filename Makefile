@@ -4,6 +4,12 @@ PACKAGES ?= $(shell go list ./... | grep -v /vendor/)
 
 all: build
 
+install:
+	@hash govendor > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
+		go get -u github.com/kardianos/govendor; \
+	fi
+	govendor sync
+
 fmt:
 	go fmt $(PACKAGES)
 
@@ -28,8 +34,10 @@ test:
 html:
 	go tool cover -html=coverage.txt
 
-install:
-	go get -t -d -v ./...
+coverage:
+	curl -s https://codecov.io/bash > .codecov && \
+	chmod +x .codecov && \
+	./.codecov -f .cover/coverage.txt
 
 clean:
 	go clean -x -i ./...
