@@ -10,14 +10,12 @@ pipeline:
       - make vet
       - make lint
       - coverage all
-      # send coverage report
-      - curl -s https://codecov.io/bash > .codecov &&
-        chmod +x .codecov &&
-        ./.codecov -t ${CODECOV_TOKEN} -f .cover/coverage.txt
+      - make coverage
     when:
       event: [ push, tag, pull_request ]
 
 matrix:
   GO_VERSION:
-    - 1.7.4
+    - 1.8.0
+    - 1.7.5
     - 1.6.4
