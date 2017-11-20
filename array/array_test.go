@@ -108,6 +108,14 @@ func TestDiff(t *testing.T) {
 			want: []string{"a", "b"},
 		},
 		{
+			name: "test empty source and target",
+			args: args{
+				s: []string{},
+				t: []string{},
+			},
+			want: []string{},
+		},
+		{
 			name: "test source len > target len",
 			args: args{
 				s: []string{"a", "b", "c", "d", "e"},
