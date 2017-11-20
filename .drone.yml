@@ -11,6 +11,14 @@ pipeline:
       - make vet
       - make lint
       - coverage all
-      - make coverage
     when:
-      event: [ push, tag, pull_request ]
+      event: [ push, pull_request ]
+
+  codecov:
+    image: robertstettner/drone-codecov
+    group: build
+    secrets: [ codecov_token ]
+    files:
+      - .cover/coverage.txt
+    when:
+      event: [ push, pull_request ]
