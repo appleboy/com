@@ -1,6 +1,8 @@
 package random
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestStringWithCharset(t *testing.T) {
 	type args struct {
@@ -22,9 +24,11 @@ func TestStringWithCharset(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		if got := StringWithCharset(tt.args.length, tt.args.charset); got != tt.want {
-			t.Errorf("%q. StringWithCharset() = %v, want %v", tt.name, got, tt.want)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			if got := StringWithCharset(tt.args.length, tt.args.charset); got != tt.want {
+				t.Errorf("StringWithCharset() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
 
@@ -46,8 +50,10 @@ func TestString(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		if got := String(tt.args.length); len(got) != tt.want {
-			t.Errorf("%q. String() = %v, want %v", tt.name, got, tt.want)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			if got := String(tt.args.length); len(got) != tt.want {
+				t.Errorf("String() = %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
