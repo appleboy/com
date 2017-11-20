@@ -1,9 +1,10 @@
 workspace:
-  path: /go/src/github.com/appleboy/com
+  base: /go/src
+  path: github.com/appleboy/com
 
 pipeline:
   test:
-    image: appleboy/golang-testing:${GO_VERSION}
+    image: appleboy/golang-testing
     pull: true
     commands:
       - make install
@@ -13,9 +14,3 @@ pipeline:
       - make coverage
     when:
       event: [ push, tag, pull_request ]
-
-matrix:
-  GO_VERSION:
-    - 1.8.0
-    - 1.7.5
-    - 1.6.4
