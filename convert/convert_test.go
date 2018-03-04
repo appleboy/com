@@ -51,3 +51,36 @@ func TestToString(t *testing.T) {
 		})
 	}
 }
+
+func TestToBool(t *testing.T) {
+	type args struct {
+		value interface{}
+	}
+	tests := []struct {
+		name string
+		args args
+		want interface{}
+	}{
+		{
+			name: "int",
+			args: args{
+				value: 100,
+			},
+			want: true,
+		},
+		{
+			name: "int",
+			args: args{
+				value: 0,
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ToBool(tt.args.value); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ToBool() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
