@@ -2,6 +2,8 @@ package convert
 
 import (
 	"fmt"
+	"math"
+	"strconv"
 )
 
 // ToString convert any type to string
@@ -50,4 +52,96 @@ func ToBool(value interface{}) interface{} {
 		return ToBool(*value)
 	}
 	return false
+}
+
+// ToInt convert any type to int
+func ToInt(value interface{}) interface{} {
+	switch value := value.(type) {
+	case bool:
+		if value == true {
+			return 1
+		}
+		return 0
+	case int:
+		if value < int(math.MinInt32) || value > int(math.MaxInt32) {
+			return nil
+		}
+		return value
+	case *int:
+		return ToInt(*value)
+	case int8:
+		return int(value)
+	case *int8:
+		return int(*value)
+	case int16:
+		return int(value)
+	case *int16:
+		return int(*value)
+	case int32:
+		return int(value)
+	case *int32:
+		return int(*value)
+	case int64:
+		if value < int64(math.MinInt32) || value > int64(math.MaxInt32) {
+			return nil
+		}
+		return int(value)
+	case *int64:
+		return ToInt(*value)
+	case uint:
+		if value > math.MaxInt32 {
+			return nil
+		}
+		return int(value)
+	case *uint:
+		return ToInt(*value)
+	case uint8:
+		return int(value)
+	case *uint8:
+		return int(*value)
+	case uint16:
+		return int(value)
+	case *uint16:
+		return int(*value)
+	case uint32:
+		if value > uint32(math.MaxInt32) {
+			return nil
+		}
+		return int(value)
+	case *uint32:
+		return ToInt(*value)
+	case uint64:
+		if value > uint64(math.MaxInt32) {
+			return nil
+		}
+		return int(value)
+	case *uint64:
+		return ToInt(*value)
+	case float32:
+		if value < float32(math.MinInt32) || value > float32(math.MaxInt32) {
+			return nil
+		}
+		return int(value)
+	case *float32:
+		return ToInt(*value)
+	case float64:
+		if value < float64(math.MinInt32) || value > float64(math.MaxInt32) {
+			return nil
+		}
+		return int(value)
+	case *float64:
+		return ToInt(*value)
+	case string:
+		val, err := strconv.ParseFloat(value, 0)
+		if err != nil {
+			return nil
+		}
+		return ToInt(val)
+	case *string:
+		return ToInt(*value)
+	}
+
+	// If the value cannot be transformed into an int, return nil instead of '0'
+	// to denote 'no integer found'
+	return nil
 }

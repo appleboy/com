@@ -84,3 +84,36 @@ func TestToBool(t *testing.T) {
 		})
 	}
 }
+
+func TestToInt(t *testing.T) {
+	type args struct {
+		value interface{}
+	}
+	tests := []struct {
+		name string
+		args args
+		want interface{}
+	}{
+		{
+			name: "bool true",
+			args: args{
+				value: true,
+			},
+			want: 1,
+		},
+		{
+			name: "bool false",
+			args: args{
+				value: false,
+			},
+			want: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ToInt(tt.args.value); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ToInt() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
