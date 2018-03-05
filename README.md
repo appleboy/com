@@ -8,3 +8,5 @@ This is an open source project for commonly used functions for the [Go programmi
 
 * [x] Random
 * [x] Array
+* [x] File
+* [x] Convert
