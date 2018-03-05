@@ -145,3 +145,37 @@ func ToInt(value interface{}) interface{} {
 	// to denote 'no integer found'
 	return nil
 }
+
+// ToFloat convert any type to float
+func ToFloat(value interface{}) interface{} {
+	switch value := value.(type) {
+	case bool:
+		if value == true {
+			return 1.0
+		}
+		return 0.0
+	case *bool:
+		return ToFloat(*value)
+	case int:
+		return float64(value)
+	case *int32:
+		return ToFloat(*value)
+	case float32:
+		return value
+	case *float32:
+		return ToFloat(*value)
+	case float64:
+		return value
+	case *float64:
+		return ToFloat(*value)
+	case string:
+		val, err := strconv.ParseFloat(value, 0)
+		if err != nil {
+			return nil
+		}
+		return val
+	case *string:
+		return ToFloat(*value)
+	}
+	return 0.0
+}

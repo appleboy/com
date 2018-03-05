@@ -117,3 +117,36 @@ func TestToInt(t *testing.T) {
 		})
 	}
 }
+
+func TestToFloat(t *testing.T) {
+	type args struct {
+		value interface{}
+	}
+	tests := []struct {
+		name string
+		args args
+		want interface{}
+	}{
+		{
+			name: "boolean true",
+			args: args{
+				value: true,
+			},
+			want: 1.0,
+		},
+		{
+			name: "boolean false",
+			args: args{
+				value: false,
+			},
+			want: 0.0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ToFloat(tt.args.value); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ToFloat() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
