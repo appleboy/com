@@ -132,3 +132,24 @@ func TestDiff(t *testing.T) {
 		})
 	}
 }
+
+func TestDiffValue(t *testing.T) {
+	s := []string{"59bf2170ceadf87a1e7e1ab4", "59bf2170ceadf87a1e7e1ab5", "5a2899f460faae1623882b5b"}
+	tt := []string{"59bf2170ceadf87a1e7e1ab4", "5a2899f460faae1623882b5b", "59bf2170ceadf87a1e7e1ab5"}
+	want := []string{}
+	wantS := []string{"59bf2170ceadf87a1e7e1ab4", "59bf2170ceadf87a1e7e1ab5", "5a2899f460faae1623882b5b"}
+	wantT := []string{"59bf2170ceadf87a1e7e1ab4", "5a2899f460faae1623882b5b", "59bf2170ceadf87a1e7e1ab5"}
+
+	got := Diff(s, tt)
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("Diff() = %v, want %v", got, want)
+	}
+
+	if !reflect.DeepEqual(s, wantS) {
+		t.Errorf("s = %v, want %v", s, wantS)
+	}
+
+	if !reflect.DeepEqual(tt, wantT) {
+		t.Errorf("tt = %v, want %v", t, wantT)
+	}
+}

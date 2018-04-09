@@ -18,34 +18,38 @@ func In(needle string, haystack []string) ([]string, bool) {
 
 // Diff show difference in two array.
 func Diff(s, t []string) []string {
+	slice1 := make([]string, len(s))
+	slice2 := make([]string, len(t))
+	copy(slice1, s)
+	copy(slice2, t)
 	v := []string{}
-	if len(s) == 0 && len(t) == 0 {
+	if len(slice1) == 0 && len(slice2) == 0 {
 		return []string{}
 	}
 
-	if len(s) == 0 {
-		return t
+	if len(slice1) == 0 {
+		return slice2
 	}
 
-	if len(t) == 0 {
-		return s
+	if len(slice2) == 0 {
+		return slice1
 	}
 
-	if len(s) > len(t) {
-		s, t = t, s
+	if len(slice1) > len(slice2) {
+		slice1, slice2 = slice2, slice1
 	}
 
-	for _, val := range s {
-		if newT, ok := In(val, t); ok {
-			t = newT
+	for _, val := range slice1 {
+		if newT, ok := In(val, slice2); ok {
+			slice2 = newT
 			continue
 		}
 
 		v = append(v, val)
 	}
 
-	if len(t) > 0 {
-		v = append(v, t...)
+	if len(slice2) > 0 {
+		v = append(v, slice2...)
 	}
 
 	return v
