@@ -133,6 +133,28 @@ func TestDiff(t *testing.T) {
 	}
 }
 
+func TestInValue(t *testing.T) {
+	s := []string{"59bf2170ceadf87a1e7e1ab4", "59bf2170ceadf87a1e7e1ab5", "5a2899f460faae1623882b5b"}
+	tt := "59bf2170ceadf87a1e7e1ab4"
+	want := []string{"59bf2170ceadf87a1e7e1ab5", "5a2899f460faae1623882b5b"}
+	wantOK := true
+	wantS := []string{"59bf2170ceadf87a1e7e1ab4", "59bf2170ceadf87a1e7e1ab5", "5a2899f460faae1623882b5b"}
+
+	got, ok := In(tt, s)
+
+	if ok != wantOK {
+		t.Errorf("bool = %v, want %v", ok, wantOK)
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("In() = %v, want %v", got, want)
+	}
+
+	if !reflect.DeepEqual(s, wantS) {
+		t.Errorf("s = %v, want %v", s, wantS)
+	}
+}
+
 func TestDiffValue(t *testing.T) {
 	s := []string{"59bf2170ceadf87a1e7e1ab4", "59bf2170ceadf87a1e7e1ab5", "5a2899f460faae1623882b5b"}
 	tt := []string{"59bf2170ceadf87a1e7e1ab4", "5a2899f460faae1623882b5b", "59bf2170ceadf87a1e7e1ab5"}

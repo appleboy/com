@@ -2,18 +2,21 @@ package array
 
 // In check string in array.
 func In(needle string, haystack []string) ([]string, bool) {
-	if len(haystack) == 0 {
-		return haystack, false
+	newHaystack := make([]string, len(haystack))
+	copy(newHaystack, haystack)
+
+	if len(newHaystack) == 0 {
+		return newHaystack, false
 	}
 
-	for i, val := range haystack {
+	for i, val := range newHaystack {
 		if val == needle {
-			haystack = append(haystack[:i], haystack[i+1:]...)
-			return haystack, true
+			newHaystack = append(newHaystack[:i], newHaystack[i+1:]...)
+			return newHaystack, true
 		}
 	}
 
-	return haystack, false
+	return newHaystack, false
 }
 
 // Diff show difference in two array.
