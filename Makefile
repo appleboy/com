@@ -20,7 +20,7 @@ lint:
 	@hash revive > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		go get -u github.com/mgechev/revive; \
 	fi
-	revive -config config.toml ./... || exit 1
+	revive -config .revive.toml ./... || exit 1
 
 .PHONY: test
 test:
