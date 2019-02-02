@@ -13,7 +13,6 @@ steps:
   commands:
   - make vet
   - make lint
-  - coverage all
 
 - name: codecov
   pull: default
@@ -25,10 +24,6 @@ steps:
   environment:
     CODECOV_TOKEN:
       from_secret: codecov_token
-  when:
-    event:
-    - push
-    - pull_request
 
 - name: discord
   pull: always
