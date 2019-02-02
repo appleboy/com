@@ -22,8 +22,4 @@ _testmain.go
 *.exe
 *.test
 *.prof
-coverage.txt
-.cover
-
-*/vendor/*
-!vendor/vendor.json
+coverage.out

@@ -13,13 +13,14 @@ steps:
   commands:
   - make vet
   - make lint
+  - make test
 
 - name: codecov
   pull: default
   image: robertstettner/drone-codecov
   settings:
     files:
-    - .cover/coverage.txt
+    - coverage.out
     group: build
   environment:
     CODECOV_TOKEN:

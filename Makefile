@@ -16,23 +16,31 @@ fmt:
 vet:
 	go vet $(PACKAGES)
 
-errcheck:
-	@which errcheck > /dev/null; if [ $$? -ne 0 ]; then \
-		go get -u github.com/kisielk/errcheck; \
-	fi
-	errcheck $(PACKAGES)
-
 lint:
 	@hash revive > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
-		$(GO) get -u github.com/mgechev/revive; \
+		go get -u github.com/mgechev/revive; \
 	fi
 	revive -config config.toml ./... || exit 1
 
+.PHONY: test
 test:
-	for PKG in $(PACKAGES); do go test -cover -coverprofile $$GOPATH/src/$$PKG/coverage.txt $$PKG || exit 1; done;
-
-html:
-	go tool cover -html=coverage.txt
+	echo "mode: count" > coverage.out
+	for d in $(PACKAGES); do \
+		go test -v -covermode=count -coverprofile=profile.out $$d > tmp.out; \
+		cat tmp.out; \
+		if grep -q "^--- FAIL" tmp.out; then \
+			rm tmp.out; \
+			exit 1; \
+		elif grep -q "build failed" tmp.out; then \
+			rm tmp.out; \
+			exit; \
+		fi; \
+		if [ -f profile.out ]; then \
+			cat profile.out | grep -v "mode:" >> coverage.out; \
+			rm profile.out; \
+		fi; \
+	done
+	rm tmp.out
 
 coverage:
 	curl -s https://codecov.io/bash > .codecov && \
