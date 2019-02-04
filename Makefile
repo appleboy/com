@@ -1,6 +1,7 @@
 .PHONY: test fmt vet errcheck lint
 
-PACKAGES ?= $(shell go list ./...)
+GO ?= go
+PACKAGES ?= $(shell $(GO) list ./...)
 GOFILES := $(shell find . -name "*.go" -type f)
 GOFMT ?= gofmt "-s"
 
@@ -21,12 +22,12 @@ fmt-check:
 
 .PHONY: vet
 vet:
-	go vet $(PACKAGES)
+	$(GO) vet $(PACKAGES)
 
 .PHONY: lint
 lint:
 	@hash revive > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
-		go get -u github.com/mgechev/revive; \
+		$(GO) get -u github.com/mgechev/revive; \
 	fi
 	revive -config .revive.toml ./... || exit 1
 
@@ -34,7 +35,7 @@ lint:
 test: fmt-check
 	echo "mode: count" > coverage.out
 	for d in $(PACKAGES); do \
-		go test -v -covermode=count -coverprofile=profile.out $$d > tmp.out; \
+		$(GO) test -v -covermode=count -coverprofile=profile.out $$d > tmp.out; \
 		cat tmp.out; \
 		if grep -q "^--- FAIL" tmp.out; then \
 			rm tmp.out; \
