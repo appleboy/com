@@ -2,8 +2,39 @@ package array
 
 import (
 	"reflect"
+	"strconv"
 	"testing"
 )
+
+func BenchmarkArrayMap(b *testing.B) {
+	newString := []string{}
+	for i := 0; i < 100; i++ {
+		newString = append(newString, strconv.Itoa(i))
+	}
+	for i := 0; i < b.N; i++ {
+		InMap("99", newString)
+	}
+}
+
+func BenchmarkArraySlice(b *testing.B) {
+	newString := []string{}
+	for i := 0; i < 100; i++ {
+		newString = append(newString, strconv.Itoa(i))
+	}
+	for i := 0; i < b.N; i++ {
+		InSlice("99", newString)
+	}
+}
+
+func BenchmarkIn(b *testing.B) {
+	newString := []string{}
+	for i := 0; i < 100; i++ {
+		newString = append(newString, strconv.Itoa(i))
+	}
+	for i := 0; i < b.N; i++ {
+		In("99", newString)
+	}
+}
 
 func TestIn(t *testing.T) {
 	type args struct {

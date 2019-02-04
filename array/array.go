@@ -1,5 +1,30 @@
 package array
 
+// InMap check index in Map
+func InMap(needle string, haystack []string) bool {
+	newStack := map[string]bool{}
+	for _, val := range haystack {
+		newStack[val] = true
+	}
+
+	if _, ok := newStack[needle]; ok {
+		return true
+	}
+
+	return false
+}
+
+// InSlice check index in slice
+func InSlice(needle string, haystack []string) bool {
+	for _, val := range haystack {
+		if val == needle {
+			return true
+		}
+	}
+
+	return false
+}
+
 // In check string in array.
 func In(needle string, haystack []string) ([]string, bool) {
 	newHaystack := make([]string, len(haystack))
