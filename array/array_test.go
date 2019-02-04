@@ -36,6 +36,16 @@ func BenchmarkIn(b *testing.B) {
 	}
 }
 
+func BenchmarkInArray(b *testing.B) {
+	newString := []string{}
+	for i := 0; i < 100; i++ {
+		newString = append(newString, strconv.Itoa(i))
+	}
+	for i := 0; i < b.N; i++ {
+		InArray("99", newString)
+	}
+}
+
 func TestIn(t *testing.T) {
 	type args struct {
 		needle   string
