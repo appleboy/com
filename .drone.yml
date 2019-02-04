@@ -8,7 +8,7 @@ platform:
 
 steps:
 - name: test
-  pull: always
+  pull: true
   image: golang:1.11
   commands:
   - make vet
@@ -16,18 +16,17 @@ steps:
   - make test
 
 - name: codecov
-  pull: default
+  pull: true
   image: robertstettner/drone-codecov
   settings:
     files:
     - coverage.out
-    group: build
   environment:
     CODECOV_TOKEN:
       from_secret: codecov_token
 
 - name: discord
-  pull: always
+  pull: true
   image: appleboy/drone-discord
   environment:
     DISCORD_WEBHOOK_ID:

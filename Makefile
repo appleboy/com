@@ -1,21 +1,29 @@
-.PHONY: test fmt vet errcheck lint install
+.PHONY: test fmt vet errcheck lint
 
 PACKAGES ?= $(shell go list ./...)
+GOFILES := $(shell find . -name "*.go" -type f)
+GOFMT ?= gofmt "-s"
 
 all: build
 
-install:
-	@hash govendor > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
-		go get -u github.com/kardianos/govendor; \
-	fi
-	govendor sync
-
+.PHONY: fmt
 fmt:
-	go fmt $(PACKAGES)
+	$(GOFMT) -w $(GOFILES)
 
+.PHONY: fmt-check
+fmt-check:
+	@diff=$$($(GOFMT) -d $(GOFILES)); \
+	if [ -n "$$diff" ]; then \
+		echo "Please run 'make fmt' and commit the result:"; \
+		echo "$${diff}"; \
+		exit 1; \
+	fi;
+
+.PHONY: vet
 vet:
 	go vet $(PACKAGES)
 
+.PHONY: lint
 lint:
 	@hash revive > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		go get -u github.com/mgechev/revive; \
@@ -23,7 +31,7 @@ lint:
 	revive -config .revive.toml ./... || exit 1
 
 .PHONY: test
-test:
+test: fmt-check
 	echo "mode: count" > coverage.out
 	for d in $(PACKAGES); do \
 		go test -v -covermode=count -coverprofile=profile.out $$d > tmp.out; \
@@ -42,11 +50,6 @@ test:
 	done
 	rm tmp.out
 
-coverage:
-	curl -s https://codecov.io/bash > .codecov && \
-	chmod +x .codecov && \
-	./.codecov -f .cover/coverage.txt
-
 clean:
 	go clean -x -i ./...
-	find . -name "coverage.txt" -delete
+	find . -name "coverage.out" -delete
