@@ -29,6 +29,7 @@ func InSlice(needle string, haystack []string) bool {
 	return false
 }
 
+// InArray index in array for interface{}
 func InArray(val interface{}, array interface{}) (exists bool, index int) {
 	exists = false
 	index = -1
