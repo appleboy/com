@@ -18,10 +18,10 @@ $ go test -v -benchmem -run=^$ -bench=^Benchmark ./array/
 goos: darwin
 goarch: amd64
 pkg: github.com/appleboy/com/array
-BenchmarkArrayMap-8               200000              9695 ns/op            5654 B/op          9 allocs/op
-BenchmarkArraySlice-8            2000000               624 ns/op               0 B/op          0 allocs/op
-BenchmarkIn-8                    1000000              1095 ns/op            1792 B/op          1 allocs/op
-BenchmarkInArray-8                100000             13896 ns/op            1632 B/op        101 allocs/op
+BenchmarkArrayMap-8               200000              9735 ns/op            5654 B/op          9 allocs/op
+BenchmarkArraySlice-8            2000000               663 ns/op               0 B/op          0 allocs/op
+BenchmarkIn-8                    1000000              1137 ns/op            1792 B/op          1 allocs/op
+BenchmarkInArray-8                100000             14337 ns/op            1632 B/op        101 allocs/op
 PASS
-ok      github.com/appleboy/com/array   6.583s
+ok      github.com/appleboy/com/array   6.780
 ```
