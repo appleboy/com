@@ -33,7 +33,7 @@ lint:
 
 .PHONY: test
 test: fmt-check
-	$(GO) test -v -cover -coverprofile coverage.out $(PACKAGES) || exit 1
+	@$(GO) test -v -cover -coverprofile coverage.out $(PACKAGES) && echo "\n==>\033[32m Ok\033[m\n" || exit 1
 
 clean:
 	go clean -x -i ./...
