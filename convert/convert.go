@@ -58,7 +58,7 @@ func ToBool(value interface{}) interface{} {
 func ToInt(value interface{}) interface{} {
 	switch value := value.(type) {
 	case bool:
-		if value == true {
+		if value {
 			return 1
 		}
 		return 0
@@ -150,7 +150,7 @@ func ToInt(value interface{}) interface{} {
 func ToFloat(value interface{}) interface{} {
 	switch value := value.(type) {
 	case bool:
-		if value == true {
+		if value {
 			return 1.0
 		}
 		return 0.0
