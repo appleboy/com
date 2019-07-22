@@ -23,3 +23,15 @@ func IsFile(filePath string) bool {
 	}
 	return !f.IsDir()
 }
+
+// Remove removes single file or path and any children it contains.
+// It removes everything it can but returns the first error it encounters.
+// If the path does not exist, RemoveAll returns nil (no error).
+// If there is an error, it will be of type *PathError.
+func Remove(filePath string) error {
+	if IsDir(filePath) {
+		return os.RemoveAll(filePath)
+	}
+
+	return os.Remove(filePath)
+}

@@ -1,8 +1,13 @@
 package file
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
 
 func TestIsDir(t *testing.T) {
+	os.Mkdir("testdir", os.ModeDir)
+
 	type args struct {
 		dir string
 	}
@@ -11,7 +16,20 @@ func TestIsDir(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "check exist dir",
+			args: args{
+				dir: "testdir",
+			},
+			want: true,
+		},
+		{
+			name: "dir not exist",
+			args: args{
+				dir: "testdir2",
+			},
+			want: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -20,6 +38,9 @@ func TestIsDir(t *testing.T) {
 			}
 		})
 	}
+
+	// remove dir
+	Remove("testdir")
 }
 
 func TestIsFile(t *testing.T) {
