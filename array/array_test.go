@@ -216,3 +216,39 @@ func TestDiffValue(t *testing.T) {
 		t.Errorf("tt = %v, want %v", t, wantT)
 	}
 }
+
+func TestInSliceInt64(t *testing.T) {
+	type args struct {
+		needle   int64
+		haystack []int64
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "found",
+			args: args{
+				needle:   64,
+				haystack: []int64{64, 128},
+			},
+			want: true,
+		},
+		{
+			name: "not found",
+			args: args{
+				needle:   64,
+				haystack: []int64{128},
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := InSliceInt64(tt.args.needle, tt.args.haystack); got != tt.want {
+				t.Errorf("InSliceInt64() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

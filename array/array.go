@@ -29,6 +29,7 @@ func InSlice(needle string, haystack []string) bool {
 	return false
 }
 
+// InSliceInt64 check index in slice int64
 func InSliceInt64(needle int64, haystack []int64) bool {
 	for _, val := range haystack {
 		if val == needle {
