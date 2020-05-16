@@ -2,7 +2,6 @@ package random
 
 import (
 	"math/rand"
-	"time"
 )
 
 type (
@@ -21,16 +20,25 @@ const (
 	Hex Charset = Numeric + "abcdef"
 )
 
-var seededRand = rand.New(
-	rand.NewSource(time.Now().UnixNano()))
+func randomBytes(n int) []byte {
+	bytes := make([]byte, n)
+	_, err := rand.Read(bytes)
+	if err != nil {
+		panic(err)
+	}
+
+	return bytes
+}
 
 // StringWithCharset support rand string you defined
-func StringWithCharset(length int, charset Charset) string {
-	b := make([]byte, length)
-	for i := range b {
-		b[i] = charset[seededRand.Intn(len(charset))]
+func StringWithCharset(byteLen int, charset Charset) string {
+	bytes := randomBytes(byteLen)
+	length := len(charset)
+	for i, b := range bytes {
+		bytes[i] = charset[b%byte(length)]
 	}
-	return string(b)
+
+	return string(bytes)
 }
 
 // String supply rand string
