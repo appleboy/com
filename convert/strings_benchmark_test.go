@@ -72,14 +72,14 @@ func BenchmarkStr2BytesNew(b *testing.B) {
 
 func BenchmarkConvertOld(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		b := []byte(s)
-		_ = string(b)
+		k := []byte(s)
+		_ = string(k)
 	}
 }
 
 func BenchmarkConvertNew(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		b := StrToBytes(s)
-		_ = BytesToStr(b)
+		k := StrToBytes(s)
+		_ = BytesToStr(k)
 	}
 }
