@@ -1,7 +1,6 @@
 package convert
 
 import (
-	"strings"
 	"testing"
 )
 
@@ -28,45 +27,5 @@ func TestMD5Hash(t *testing.T) {
 				t.Errorf("MD5Hash() = %v, want %v", got, tt.want)
 			}
 		})
-	}
-}
-
-var s = strings.Repeat("s", 1024)
-
-func BenchmarkBytesToStrOld(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		_ = string([]byte(s))
-	}
-}
-
-func BenchmarkBytesToStrNew(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		_ = BytesToStr([]byte(s))
-	}
-}
-
-func BenchmarkStr2BytesOld(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		_ = []byte(s)
-	}
-}
-
-func BenchmarkStr2BytesNew(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		_ = StrToBytes(s)
-	}
-}
-
-func BenchmarkConvertOld(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		b := []byte(s)
-		_ = string(b)
-	}
-}
-
-func BenchmarkConvertNew(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		b := StrToBytes(s)
-		_ = BytesToStr(b)
 	}
 }
