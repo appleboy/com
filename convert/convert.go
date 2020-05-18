@@ -7,7 +7,7 @@ import (
 )
 
 // ToString convert any type to string
-func ToString(value interface{}) interface{} {
+func ToString(value interface{}) string {
 	if v, ok := value.(*string); ok {
 		return *v
 	}
@@ -15,7 +15,7 @@ func ToString(value interface{}) interface{} {
 }
 
 // ToBool convert any type to boolean
-func ToBool(value interface{}) interface{} {
+func ToBool(value interface{}) bool {
 	switch value := value.(type) {
 	case bool:
 		return value
