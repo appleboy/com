@@ -29,3 +29,36 @@ func TestMD5Hash(t *testing.T) {
 		})
 	}
 }
+
+func TestSnakeCasedName(t *testing.T) {
+	type args struct {
+		name string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "simple",
+			args: args{
+				name: "Foo",
+			},
+			want: "foo",
+		},
+		{
+			name: "complex",
+			args: args{
+				name: "FooBarTest",
+			},
+			want: "foo_bar_test",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SnakeCasedName(tt.args.name); got != tt.want {
+				t.Errorf("SnakeCasedName() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

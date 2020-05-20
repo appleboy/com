@@ -107,15 +107,3 @@ func BenchmarkToSnakeCasedName(b *testing.B) {
 		_ = toSnakeCase(s)
 	}
 }
-
-func BenchmarkRunesToStrOld(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		_ = string([]rune(s))
-	}
-}
-
-func BenchmarkRunesToStrNew(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		_ = RunesToStr([]rune(s))
-	}
-}

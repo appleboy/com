@@ -23,11 +23,6 @@ func BytesToStr(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
-// RunesToStr converts rune slice to a string.
-func RunesToStr(b []rune) string {
-	return *(*string)(unsafe.Pointer(&b))
-}
-
 // StrToBytes converts string to a byte slice without memory allocation.
 //
 // Note it may break if string and/or slice header will change
@@ -57,5 +52,5 @@ func SnakeCasedName(name string) string {
 		newstr = append(newstr, chr)
 	}
 
-	return RunesToStr(newstr)
+	return string(newstr)
 }
