@@ -2,6 +2,7 @@ package convert
 
 import (
 	"bytes"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -81,5 +82,40 @@ func BenchmarkConvertNew(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		k := StrToBytes(s)
 		_ = BytesToStr(k)
+	}
+}
+
+func BenchmarkSnakeCasedNameOld(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		s := "FooBar"
+		_ = SnakeCasedName(s)
+	}
+}
+
+var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
+var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
+
+func toSnakeCase(str string) string {
+	snake := matchFirstCap.ReplaceAllString(str, "${1}_${2}")
+	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
+	return strings.ToLower(snake)
+}
+
+func BenchmarkToSnakeCasedName(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		s := "FooBar"
+		_ = toSnakeCase(s)
+	}
+}
+
+func BenchmarkRunesToStrOld(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_ = string([]rune(s))
+	}
+}
+
+func BenchmarkRunesToStrNew(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_ = RunesToStr([]rune(s))
 	}
 }
