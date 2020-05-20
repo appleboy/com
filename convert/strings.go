@@ -20,7 +20,11 @@ func MD5Hash(text string) string {
 // Note it may break if string and/or slice header will change
 // in the future go versions.
 func BytesToStr(b []byte) string {
-	/* #nosec G103 */
+	return *(*string)(unsafe.Pointer(&b))
+}
+
+// RunesToStr converts rune slice to a string.
+func RunesToStr(b []rune) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
@@ -37,4 +41,21 @@ func StrToBytes(s string) (b []byte) {
 	bh.Len = sh.Len
 	bh.Cap = sh.Len
 	return b
+}
+
+// SnakeCasedName convert String into Snake Case
+// ex: FooBar -> foo_bar
+func SnakeCasedName(name string) string {
+	newstr := make([]rune, 0)
+	for idx, chr := range name {
+		if isUpper := 'A' <= chr && chr <= 'Z'; isUpper {
+			if idx > 0 {
+				newstr = append(newstr, '_')
+			}
+			chr -= ('A' - 'a')
+		}
+		newstr = append(newstr, chr)
+	}
+
+	return RunesToStr(newstr)
 }
