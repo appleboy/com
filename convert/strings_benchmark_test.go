@@ -85,13 +85,6 @@ func BenchmarkConvertNew(b *testing.B) {
 	}
 }
 
-func BenchmarkSnakeCasedNameOld(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		s := "FooBar"
-		_ = SnakeCasedName(s)
-	}
-}
-
 var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
 var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
 
@@ -101,9 +94,32 @@ func toSnakeCase(str string) string {
 	return strings.ToLower(snake)
 }
 
-func BenchmarkToSnakeCasedName(b *testing.B) {
+func BenchmarkSnakeCasedNameRegex(b *testing.B) {
+	b.ReportAllocs()
+	b.ResetTimer()
+
+	s := strings.Repeat("FooBar", 32)
 	for i := 0; i < b.N; i++ {
-		s := "FooBar"
 		_ = toSnakeCase(s)
+	}
+}
+
+func BenchmarkSnakeCasedNameOld(b *testing.B) {
+	b.ReportAllocs()
+	b.ResetTimer()
+
+	s := strings.Repeat("FooBar", 32)
+	for i := 0; i < b.N; i++ {
+		_ = snakeCasedNameOld(s)
+	}
+}
+
+func BenchmarkSnakeCasedNameNew(b *testing.B) {
+	b.ReportAllocs()
+	b.ResetTimer()
+
+	s := strings.Repeat("FooBar", 32)
+	for i := 0; i < b.N; i++ {
+		_ = SnakeCasedName(s)
 	}
 }
