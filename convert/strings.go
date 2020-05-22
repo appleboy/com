@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"reflect"
+	"strings"
 	"unsafe"
 )
 
@@ -67,6 +68,33 @@ func SnakeCasedName(name string) string {
 			}
 			c += 'a' - 'A'
 		}
+		newstr = append(newstr, c)
+	}
+
+	return BytesToStr(newstr)
+}
+
+// TitleCasedName convert String into title cased
+// ex: foo_bar -> FooBar
+func TitleCasedName(name string) string {
+	newstr := make([]byte, 0, len(name))
+	upNextChar := true
+
+	name = strings.ToLower(name)
+
+	for i := 0; i < len(name); i++ {
+		c := name[i]
+		switch {
+		case upNextChar:
+			upNextChar = false
+			if 'a' <= c && c <= 'z' {
+				c -= 'a' - 'A'
+			}
+		case c == '_':
+			upNextChar = true
+			continue
+		}
+
 		newstr = append(newstr, c)
 	}
 

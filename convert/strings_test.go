@@ -62,3 +62,21 @@ func TestSnakeCasedName(t *testing.T) {
 		})
 	}
 }
+
+func TestTitleCasedName(t *testing.T) {
+	testCases := map[string]string{
+		"http_lib":                  "HttpLib",
+		"id":                        "Id",
+		"ida":                       "Ida",
+		"id_aa":                     "IdAa",
+		"aa_id":                     "AaId",
+		"my_r_eal_funk_ylo_ng_name": "MyREalFunkYloNgName",
+	}
+
+	for in, expected := range testCases {
+		out := TitleCasedName(in)
+		if out != expected {
+			t.Errorf("Given %s, expected %s but got %s", in, expected, out)
+		}
+	}
+}
