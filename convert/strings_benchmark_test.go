@@ -51,15 +51,49 @@ var s = strings.Repeat("s", 1024)
 var stringSink string
 var byteSink []byte
 
-func BenchmarkBytesToStrOld(b *testing.B) {
+func BenchmarkBytesToStrOld01(b *testing.B) {
+	b.SetBytes(int64(len(s)))
+	b.ReportAllocs()
+	b.ResetTimer()
+
+	byt := []byte(s)
 	for i := 0; i < b.N; i++ {
-		_ = string([]byte(s))
+		v := string(byt)
+		stringSink = v
+	}
+}
+
+func bytesToString(bytes []byte) (s string) {
+	if len(bytes) == 0 {
+		return s
+	}
+	sh := (*reflect.StringHeader)(unsafe.Pointer(&s))
+	sh.Data = uintptr(unsafe.Pointer(&bytes[0]))
+	sh.Len = len(bytes)
+	return s
+}
+
+func BenchmarkBytesToStrOld2(b *testing.B) {
+	b.SetBytes(int64(len(s)))
+	b.ReportAllocs()
+	b.ResetTimer()
+
+	byt := []byte(s)
+	for i := 0; i < b.N; i++ {
+		v := bytesToString(byt)
+		stringSink = v
 	}
 }
 
 func BenchmarkBytesToStrNew(b *testing.B) {
+	b.SetBytes(int64(len(s)))
+	b.ReportAllocs()
+	b.ResetTimer()
+
+	byt := []byte(s)
 	for i := 0; i < b.N; i++ {
-		_ = BytesToStr([]byte(s))
+		v := BytesToStr(byt)
+		stringSink = v
 	}
 }
 
