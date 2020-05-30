@@ -2,9 +2,11 @@ package convert
 
 import (
 	"bytes"
+	"reflect"
 	"regexp"
 	"strings"
 	"testing"
+	"unsafe"
 )
 
 var (
@@ -61,12 +63,37 @@ func BenchmarkBytesToStrNew(b *testing.B) {
 	}
 }
 
-func BenchmarkStr2BytesOld(b *testing.B) {
+func BenchmarkStr2BytesOld01(b *testing.B) {
 	b.SetBytes(int64(len(s)))
 	b.ReportAllocs()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		v := []byte(s)
+		byteSink = v
+	}
+}
+
+// strToBytesOld converts string to a byte slice without memory allocation.
+//
+// Note it may break if string and/or slice header will change
+// in the future go versions.
+func strToBytesOld(s string) (b []byte) {
+	/* #nosec G103 */
+	bh := (*reflect.SliceHeader)(unsafe.Pointer(&b))
+	/* #nosec G103 */
+	sh := *(*reflect.StringHeader)(unsafe.Pointer(&s))
+	bh.Data = sh.Data
+	bh.Len = sh.Len
+	bh.Cap = sh.Len
+	return b
+}
+
+func BenchmarkStr2BytesOld02(b *testing.B) {
+	b.SetBytes(int64(len(s)))
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		v := strToBytesOld(s)
 		byteSink = v
 	}
 }
