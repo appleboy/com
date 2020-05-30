@@ -109,8 +109,11 @@ func BenchmarkStr2BytesNew(b *testing.B) {
 	}
 }
 
-// BenchmarkStr2BytesOld-8          6584626                  181 ns/op       5655.81 MB/s        1024 B/op          1 allocs/op
-// BenchmarkStr2BytesNew-8         646368142                1.89 ns/op     541225.49 MB/s           0 B/op          0 allocs/op
+// Report: https://cloud.drone.io/appleboy/com/54/1/2
+//
+// BenchmarkStr2BytesOld01-48            20000000           340 ns/op   3010.68 MB/s     1024 B/op        1 allocs/op
+// BenchmarkStr2BytesOld02-48          2000000000          3.60 ns/op 284659.92 MB/s        0 B/op        0 allocs/op
+// BenchmarkStr2BytesNew-48            2000000000          2.15 ns/op 476653.64 MB/s        0 B/op        0 allocs/op
 
 func BenchmarkConvertOld(b *testing.B) {
 	for i := 0; i < b.N; i++ {
