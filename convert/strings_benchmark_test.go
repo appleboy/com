@@ -97,6 +97,12 @@ func BenchmarkBytesToStrNew(b *testing.B) {
 	}
 }
 
+// report: https://cloud.drone.io/appleboy/com/56/1/2
+//
+// BenchmarkBytesToStrOld01-48            20000000            337 ns/op    3038.42 MB/s      1024 B/op         1 allocs/op
+// BenchmarkBytesToStrOld2-48           2000000000           2.15 ns/op  476609.23 MB/s         0 B/op         0 allocs/op
+// BenchmarkBytesToStrNew-48            5000000000           1.07 ns/op  953243.02 MB/s         0 B/op         0 allocs/op
+
 func BenchmarkStr2BytesOld01(b *testing.B) {
 	b.SetBytes(int64(len(s)))
 	b.ReportAllocs()
