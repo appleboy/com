@@ -24,19 +24,21 @@ func BytesToStr(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
-// StrToBytes converts string to a byte slice without memory allocation.
-//
-// Note it may break if string and/or slice header will change
-// in the future go versions.
+// StrToBytes turns a string into a []byte with 0 MemAllocs and 0 MemBytes.
+// This is an unsafe operation and will lead to problems if the underlying bytes
+// are changed.
 func StrToBytes(s string) (b []byte) {
-	/* #nosec G103 */
-	bh := (*reflect.SliceHeader)(unsafe.Pointer(&b))
-	/* #nosec G103 */
-	sh := *(*reflect.StringHeader)(unsafe.Pointer(&s))
-	bh.Data = sh.Data
-	bh.Len = sh.Len
-	bh.Cap = sh.Len
-	return b
+	if len(s) == 0 {
+		return b
+	}
+	const max = 0x7fff0000 // 2147418112
+	if len(s) > max {
+		panic("string too large")
+	}
+	bytes := (*[max]byte)(
+		unsafe.Pointer((*reflect.StringHeader)(unsafe.Pointer(&s)).Data),
+	)
+	return bytes[:len(s):len(s)]
 }
 
 // SnakeCasedName convert String into Snake Case
