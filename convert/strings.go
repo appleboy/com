@@ -2,7 +2,9 @@ package convert
 
 import (
 	"crypto/md5"
+	"encoding/binary"
 	"encoding/hex"
+	"math"
 	"reflect"
 	"strings"
 	"unsafe"
@@ -101,4 +103,18 @@ func TitleCasedName(name string) string {
 	}
 
 	return BytesToStr(newstr)
+}
+
+// Float64ToByte convert float64 to byte
+// ref: https://stackoverflow.com/questions/43693360/convert-float64-to-byte-array
+func Float64ToByte(f float64) []byte {
+	var buf [8]byte
+	binary.BigEndian.PutUint64(buf[:], math.Float64bits(f))
+	return buf[:]
+}
+
+// Float64ToByte convert byte to float64
+func ByteToFloat64(bytes []byte) float64 {
+	bits := binary.BigEndian.Uint64(bytes)
+	return math.Float64frombits(bits)
 }

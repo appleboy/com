@@ -80,3 +80,10 @@ func TestTitleCasedName(t *testing.T) {
 		}
 	}
 }
+
+func TestFloat64ToByte(t *testing.T) {
+	in := 77.99
+	if ByteToFloat64(Float64ToByte(in)) != in {
+		t.Errorf("Given %v, but got %v", in, ByteToFloat64(Float64ToByte(in)))
+	}
+}
