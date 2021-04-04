@@ -25,7 +25,7 @@ func BytesToStr(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
-// StringToBytes converts string to byte slice without a memory allocation.
+// StrToBytes converts string to byte slice without a memory allocation.
 func StrToBytes(s string) (b []byte) {
 	return *(*[]byte)(unsafe.Pointer(
 		&struct {
