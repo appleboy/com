@@ -47,9 +47,12 @@ func BenchmarkCountParamsNew(b *testing.B) {
 	}
 }
 
-var s = strings.Repeat("s", 1024)
-var stringSink string
-var byteSink []byte
+var (
+	s          = strings.Repeat("s", 1024)
+	l          = strings.Repeat("l", 1)
+	stringSink string
+	byteSink   []byte
+)
 
 func BenchmarkBytesToStrOld01(b *testing.B) {
 	b.SetBytes(int64(len(s)))
@@ -103,7 +106,7 @@ func BenchmarkBytesToStrNew(b *testing.B) {
 // BenchmarkBytesToStrOld2-48           2000000000           2.15 ns/op  476609.23 MB/s         0 B/op         0 allocs/op
 // BenchmarkBytesToStrNew-48            5000000000           1.07 ns/op  953243.02 MB/s         0 B/op         0 allocs/op
 
-func BenchmarkStr2BytesOld01(b *testing.B) {
+func BenchmarkStr2BytesOldLong(b *testing.B) {
 	b.SetBytes(int64(len(s)))
 	b.ReportAllocs()
 	b.ResetTimer()
@@ -113,33 +116,29 @@ func BenchmarkStr2BytesOld01(b *testing.B) {
 	}
 }
 
-// strToBytesOld converts string to a byte slice without memory allocation.
-//
-// Note it may break if string and/or slice header will change
-// in the future go versions.
-func strToBytesOld(s string) (b []byte) {
-	/* #nosec G103 */
-	bh := (*reflect.SliceHeader)(unsafe.Pointer(&b))
-	/* #nosec G103 */
-	sh := *(*reflect.StringHeader)(unsafe.Pointer(&s))
-	bh.Data = sh.Data
-	bh.Len = sh.Len
-	bh.Cap = sh.Len
-	return b
-}
-
-func BenchmarkStr2BytesOld02(b *testing.B) {
+func BenchmarkStr2BytesNewSLong(b *testing.B) {
 	b.SetBytes(int64(len(s)))
 	b.ReportAllocs()
 	b.ResetTimer()
+
 	for i := 0; i < b.N; i++ {
-		v := strToBytesOld(s)
+		v := StrToBytes(s)
 		byteSink = v
 	}
 }
 
-func BenchmarkStr2BytesNew(b *testing.B) {
-	b.SetBytes(int64(len(s)))
+func BenchmarkStr2BytesOldShort(b *testing.B) {
+	b.SetBytes(int64(len(l)))
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		v := []byte(s)
+		byteSink = v
+	}
+}
+
+func BenchmarkStr2BytesNewShort(b *testing.B) {
+	b.SetBytes(int64(len(l)))
 	b.ReportAllocs()
 	b.ResetTimer()
 
@@ -169,8 +168,10 @@ func BenchmarkConvertNew(b *testing.B) {
 	}
 }
 
-var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
-var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
+var (
+	matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
+	matchAllCap   = regexp.MustCompile("([a-z0-9])([A-Z])")
+)
 
 func toSnakeCase(str string) string {
 	snake := matchFirstCap.ReplaceAllString(str, "${1}_${2}")

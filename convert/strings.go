@@ -5,7 +5,6 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"math"
-	"reflect"
 	"strings"
 	"unsafe"
 )
@@ -26,21 +25,14 @@ func BytesToStr(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
-// StrToBytes turns a string into a []byte with 0 MemAllocs and 0 MemBytes.
-// This is an unsafe operation and will lead to problems if the underlying bytes
-// are changed.
+// StringToBytes converts string to byte slice without a memory allocation.
 func StrToBytes(s string) (b []byte) {
-	if len(s) == 0 {
-		return b
-	}
-	const max = 0x7fff0000 // 2147418112
-	if len(s) > max {
-		panic("string too large")
-	}
-	bytes := (*[max]byte)(
-		unsafe.Pointer((*reflect.StringHeader)(unsafe.Pointer(&s)).Data),
-	)
-	return bytes[:len(s):len(s)]
+	return *(*[]byte)(unsafe.Pointer(
+		&struct {
+			string
+			Cap int
+		}{s, len(s)},
+	))
 }
 
 // SnakeCasedName convert String into Snake Case
