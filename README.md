@@ -1,9 +1,9 @@
 # Common Functions
 
-[![GoDoc](https://godoc.org/github.com/appleboy/com?status.svg)](https://godoc.org/github.com/appleboy/com) 
+[![GoDoc](https://godoc.org/github.com/appleboy/com?status.svg)](https://godoc.org/github.com/appleboy/com)
 [![Build Status](https://cloud.drone.io/api/badges/appleboy/com/status.svg)](https://cloud.drone.io/appleboy/com)
-[![codecov](https://codecov.io/gh/appleboy/com/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/com) 
-[![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/com)](https://goreportcard.com/report/github.com/appleboy/com) 
+[![codecov](https://codecov.io/gh/appleboy/com/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/com)
+[![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/com)](https://goreportcard.com/report/github.com/appleboy/com)
 
 This is an open source project for commonly used functions for the [Go programming language](https://golang.org/).
 
@@ -16,7 +16,7 @@ This is an open source project for commonly used functions for the [Go programmi
 
 ## Benchmrk
 
-```
+```sh
 $ go test -v -benchmem -run=^$ -bench=^Benchmark ./array/
 goos: darwin
 goarch: amd64
