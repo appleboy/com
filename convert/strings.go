@@ -113,7 +113,7 @@ func Float64ToByte(f float64) []byte {
 	return buf[:]
 }
 
-// Float64ToByte convert byte to float64
+// ByteToFloat64 convert byte to float64
 func ByteToFloat64(bytes []byte) float64 {
 	bits := binary.BigEndian.Uint64(bytes)
 	return math.Float64frombits(bits)
