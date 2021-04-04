@@ -9,14 +9,14 @@ platform:
 steps:
 - name: test
   pull: true
-  image: golang:1.15
+  image: golang:1.16
   commands:
   - make vet
   - make lint
   - make test
-  - go test -v -benchmem -run=^$ -bench=^Benchmark -benchtime=3s ./array/
-  - go test -v -benchmem -run=^$ -bench=^Benchmark -benchtime=3s ./convert/
-  - go test -v -benchmem -run=^$ -bench=^Benchmark -benchtime=3s ./random/
+  - go test -v -benchmem -run=^$ -count=5 -bench=^Benchmark -benchtime=3s ./array/
+  - go test -v -benchmem -run=^$ -count=5 -bench=^Benchmark -benchtime=3s ./convert/
+  - go test -v -benchmem -run=^$ -count=5 -bench=^Benchmark -benchtime=3s ./random/
 
 - name: codecov
   pull: true
