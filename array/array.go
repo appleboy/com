@@ -5,11 +5,14 @@ import (
 )
 
 // InMap check index in Map
-func InMap(str string, s []string) bool {
-	for _, v := range s {
-		if v == str {
-			return true
-		}
+func InMap(needle string, haystack []string) bool {
+	newStack := map[string]struct{}{}
+	for _, val := range haystack {
+		newStack[val] = struct{}{}
+	}
+
+	if _, ok := newStack[needle]; ok {
+		return true
 	}
 
 	return false
