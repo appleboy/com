@@ -1,9 +1,8 @@
 GO ?= go
-PACKAGES ?= $(shell $(GO) list ./...)
 GOFILES := $(shell find . -name "*.go" -type f)
-GOFMT ?= gofmt "-s"
+GOFMT ?= gofumpt -l -s
 
-all: build
+all: test
 
 .PHONY: fmt
 fmt:
@@ -20,7 +19,7 @@ fmt-check:
 
 .PHONY: vet
 vet:
-	$(GO) vet $(PACKAGES)
+	$(GO) vet ./...
 
 .PHONY: lint
 lint:
@@ -31,7 +30,7 @@ lint:
 
 .PHONY: test
 test: fmt-check
-	@$(GO) test -v -cover -coverprofile coverage.out $(PACKAGES) && echo "\n==>\033[32m Ok\033[m\n" || exit 1
+	@$(GO) test -v -cover -coverprofile coverage.out ./... && echo "\n==>\033[32m Ok\033[m\n" || exit 1
 
 clean:
 	go clean -x -i ./...

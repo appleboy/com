@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func BenchmarkArrayMap(b *testing.B) {
+func BenchmarkArrayInMap(b *testing.B) {
 	newString := []string{}
 	for i := 0; i < 100; i++ {
 		newString = append(newString, strconv.Itoa(i))
