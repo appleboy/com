@@ -6,7 +6,7 @@ import (
 )
 
 func TestIsDir(t *testing.T) {
-	os.Mkdir("testdir", os.ModeDir)
+	_ = os.Mkdir("testdir", os.ModeDir)
 
 	type args struct {
 		dir string
@@ -40,7 +40,9 @@ func TestIsDir(t *testing.T) {
 	}
 
 	// remove dir
-	Remove("testdir")
+	if err := Remove("testdir"); err != nil {
+		t.Errorf("Remove() = %v", err)
+	}
 }
 
 func TestIsFile(t *testing.T) {

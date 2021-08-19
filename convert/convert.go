@@ -132,7 +132,7 @@ func ToInt(value interface{}) interface{} {
 	case *float64:
 		return ToInt(*value)
 	case string:
-		val, err := strconv.ParseFloat(value, 0)
+		val, err := strconv.ParseFloat(value, 32)
 		if err != nil {
 			return nil
 		}
@@ -169,7 +169,7 @@ func ToFloat(value interface{}) interface{} {
 	case *float64:
 		return ToFloat(*value)
 	case string:
-		val, err := strconv.ParseFloat(value, 0)
+		val, err := strconv.ParseFloat(value, 64)
 		if err != nil {
 			return nil
 		}
