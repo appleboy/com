@@ -5,7 +5,7 @@ GOFMT ?= gofumpt -l -s
 all: test
 
 .PHONY: test
-test: fmt-check
+test:
 	@$(GO) test -v -cover -coverprofile coverage.out ./... && echo "\n==>\033[32m Ok\033[m\n" || exit 1
 
 .PHONY: benchmark
