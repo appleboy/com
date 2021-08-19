@@ -1,7 +1,7 @@
 # Common Functions
 
+[![Run Tests](https://github.com/appleboy/com/actions/workflows/go.yml/badge.svg)](https://github.com/appleboy/com/actions/workflows/go.yml)
 [![GoDoc](https://godoc.org/github.com/appleboy/com?status.svg)](https://godoc.org/github.com/appleboy/com)
-[![Build Status](https://cloud.drone.io/api/badges/appleboy/com/status.svg)](https://cloud.drone.io/appleboy/com)
 [![codecov](https://codecov.io/gh/appleboy/com/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/com)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/com)](https://goreportcard.com/report/github.com/appleboy/com)
 
