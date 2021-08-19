@@ -28,6 +28,11 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         go: [1.13, 1.14, 1.15, 1.16, 1.17]
+        include:
+          - os: ubuntu-latest
+            go-build: ~/.cache/go-build
+          - os: macos-latest
+            go-build: ~/Library/Caches/go-build
     name: ${{ matrix.os }} @ Go ${{ matrix.go }}
     runs-on: ${{ matrix.os }}
     env:
@@ -49,17 +54,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         with:
           path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
-      - uses: actions/cache@v2
-        if: matrix.os == 'macos-latest'
-        with:
-          path: |
-            ~/Library/Caches/go-build
+            ${{ matrix.go-build }}
             ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
