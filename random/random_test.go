@@ -85,6 +85,6 @@ func BenchmarkRandStringNew(b *testing.B) {
 
 func BenchmarkRandStringBytesMaskImprSrcUnsafe(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		RandStringBytesMaskImprSrcUnsafe(10)
+		randStringBytesMaskImprSrcUnsafe(10)
 	}
 }
