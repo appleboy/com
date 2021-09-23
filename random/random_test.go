@@ -82,3 +82,9 @@ func BenchmarkRandStringNew(b *testing.B) {
 		StringWithCharset(16, Alphanumeric)
 	}
 }
+
+func BenchmarkRandStringBytesMaskImprSrcUnsafe(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		RandStringBytesMaskImprSrcUnsafe(10)
+	}
+}
