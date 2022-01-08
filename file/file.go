@@ -38,12 +38,10 @@ func Remove(filePath string) error {
 	return os.Remove(filePath)
 }
 
-var BUFFERSIZE int64
-
 // Copy files
 // See the ref:
 // https://opensource.com/article/18/6/copying-files-go
-func Copy(src, dst string, BUFFERSIZE int64) error {
+func Copy(src, dst string, size int64) error {
 	sourceFileStat, err := os.Stat(src)
 	if err != nil {
 		return err
@@ -74,7 +72,7 @@ func Copy(src, dst string, BUFFERSIZE int64) error {
 		panic(err)
 	}
 
-	buf := make([]byte, BUFFERSIZE)
+	buf := make([]byte, size)
 	for {
 		n, err := source.Read(buf)
 		if err != nil && err != io.EOF {
