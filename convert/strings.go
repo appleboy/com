@@ -6,6 +6,8 @@ import (
 	"encoding/hex"
 	"math"
 	"strings"
+
+	"github.com/appleboy/com/bytesconv"
 )
 
 // MD5Hash for md5 hash string
@@ -47,7 +49,7 @@ func SnakeCasedName(name string) string {
 		newstr = append(newstr, c)
 	}
 
-	return BytesToStr(newstr)
+	return bytesconv.BytesToStr(newstr)
 }
 
 // TitleCasedName convert String into title cased
@@ -74,7 +76,7 @@ func TitleCasedName(name string) string {
 		newstr = append(newstr, c)
 	}
 
-	return BytesToStr(newstr)
+	return bytesconv.BytesToStr(newstr)
 }
 
 // Float64ToByte convert float64 to byte
