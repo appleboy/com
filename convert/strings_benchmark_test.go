@@ -7,6 +7,8 @@ import (
 	"strings"
 	"testing"
 	"unsafe"
+
+	"github.com/appleboy/com/bytesconv"
 )
 
 var (
@@ -27,7 +29,7 @@ func countParamsOld(path string) uint16 {
 
 func countParamsNew(path string) uint16 {
 	var n uint
-	s := StrToBytes(path)
+	s := bytesconv.StrToBytes(path)
 	n += uint(bytes.Count(s, strColon))
 	n += uint(bytes.Count(s, strStar))
 	return uint16(n)
@@ -95,7 +97,7 @@ func BenchmarkBytesToStrNew(b *testing.B) {
 
 	byt := []byte(s)
 	for i := 0; i < b.N; i++ {
-		v := BytesToStr(byt)
+		v := bytesconv.BytesToStr(byt)
 		stringSink = v
 	}
 }
@@ -116,7 +118,7 @@ func BenchmarkStr2BytesNewSLong(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		v := StrToBytes(s)
+		v := bytesconv.StrToBytes(s)
 		byteSink = v
 	}
 }
@@ -137,7 +139,7 @@ func BenchmarkStr2BytesNewShort(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		v := StrToBytes(s)
+		v := bytesconv.StrToBytes(s)
 		byteSink = v
 	}
 }
@@ -157,8 +159,8 @@ func BenchmarkConvertOld(b *testing.B) {
 
 func BenchmarkConvertNew(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		k := StrToBytes(s)
-		_ = BytesToStr(k)
+		k := bytesconv.StrToBytes(s)
+		_ = bytesconv.BytesToStr(k)
 	}
 }
 
