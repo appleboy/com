@@ -179,3 +179,14 @@ func ToFloat(value interface{}) interface{} {
 	}
 	return 0.0
 }
+
+// ToPtr takes a value of any type and returns a pointer to that value.
+// This is useful for converting a value to a pointer in a generic way.
+//
+// T: The type of the value being converted.
+// value: The value to be converted to a pointer.
+//
+// Returns a pointer to the provided value.
+func ToPtr[T any](value T) *T {
+	return &value
+}
