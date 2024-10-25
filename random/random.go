@@ -1,7 +1,8 @@
 package random
 
 import (
-	"math/rand"
+	"crypto/rand"
+	mathrand "math/rand"
 	"time"
 	"unsafe"
 )
@@ -52,7 +53,7 @@ const (
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
 
-var src = rand.NewSource(time.Now().UnixNano())
+var src = mathrand.NewSource(time.Now().UnixNano())
 
 func randStringBytesMaskImprSrcUnsafe(n int) string {
 	b := make([]byte, n)
