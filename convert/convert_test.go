@@ -150,3 +150,45 @@ func TestToFloat(t *testing.T) {
 		})
 	}
 }
+
+func TestConvertBig5ToUTF8(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{
+			name:  "Valid Big5 string",
+			input: "\xa7A\xa6n",
+			want:  "你好",
+		},
+		{
+			name:  "Mixed valid and invalid Big5 string",
+			input: "\xa7A\xa6n\xff\xfe",
+			want:  "你好\ufffd\ufffd",
+		},
+		{
+			name:  "Invalid Big5 string",
+			input: "\xff\xfe",
+			want:  "\ufffd\ufffd",
+		},
+		{
+			name:  "Empty string",
+			input: "",
+			want:  "",
+		},
+		{
+			name:  "ASCII string",
+			input: "Hello, World!",
+			want:  "Hello, World!",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ConvertBig5ToUTF8(tt.input); got != tt.want {
+				t.Errorf("ConvertBig5ToUTF8() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

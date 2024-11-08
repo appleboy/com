@@ -2,8 +2,13 @@ package convert
 
 import (
 	"fmt"
+	"io"
 	"math"
 	"strconv"
+	"strings"
+
+	"golang.org/x/text/encoding/traditionalchinese"
+	"golang.org/x/text/transform"
 )
 
 // ToString convert any type to string
@@ -189,4 +194,25 @@ func ToFloat(value interface{}) interface{} {
 // Returns a pointer to the provided value.
 func ToPtr[T any](value T) *T {
 	return &value
+}
+
+// ConvertBig5ToUTF8 converts a string encoded in Big5 to UTF-8 encoding.
+// It takes a string `s` as input and returns the UTF-8 encoded string.
+// If an error occurs during the conversion, it prints an error message and returns the original string.
+//
+// Parameters:
+//   - s: The input string encoded in Big5.
+//
+// Returns:
+//   - The UTF-8 encoded string, or the original string if an error occurs.
+func ConvertBig5ToUTF8(s string) string {
+	reader := transform.NewReader(
+		strings.NewReader(s),
+		traditionalchinese.Big5.NewDecoder(),
+	)
+	d, err := io.ReadAll(reader)
+	if err != nil {
+		return s
+	}
+	return string(d)
 }
