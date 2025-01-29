@@ -196,6 +196,21 @@ func ToPtr[T any](value T) *T {
 	return &value
 }
 
+// FromPtr takes a pointer to a value and returns the value itself.
+// If the pointer is nil, it returns the zero value of the type.
+//
+// T: The type of the value being dereferenced.
+// ptr: The pointer to the value.
+//
+// Returns the value pointed to by the pointer, or the zero value if the pointer is nil.
+func FromPtr[T any](ptr *T) T {
+	if ptr == nil {
+		var zero T
+		return zero
+	}
+	return *ptr
+}
+
 // ConvertBig5ToUTF8 converts a string encoded in Big5 to UTF-8 encoding.
 // It takes a string `s` as input and returns the UTF-8 encoded string.
 // If an error occurs during the conversion, it prints an error message and returns the original string.

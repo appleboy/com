@@ -192,3 +192,61 @@ func TestConvertBig5ToUTF8(t *testing.T) {
 		})
 	}
 }
+
+func TestFromPtr(t *testing.T) {
+	tests := []struct {
+		name string
+		ptr  interface{}
+		want interface{}
+	}{
+		{
+			name: "int pointer",
+			ptr:  ToPtr(100),
+			want: 100,
+		},
+		{
+			name: "nil int pointer",
+			ptr:  (*int)(nil),
+			want: 0,
+		},
+		{
+			name: "string pointer",
+			ptr:  ToPtr("hello"),
+			want: "hello",
+		},
+		{
+			name: "nil string pointer",
+			ptr:  (*string)(nil),
+			want: "",
+		},
+		{
+			name: "bool pointer",
+			ptr:  ToPtr(true),
+			want: true,
+		},
+		{
+			name: "nil bool pointer",
+			ptr:  (*bool)(nil),
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			switch ptr := tt.ptr.(type) {
+			case *int:
+				if got := FromPtr(ptr); !reflect.DeepEqual(got, tt.want) {
+					t.Errorf("FromPtr() = %v, want %v", got, tt.want)
+				}
+			case *string:
+				if got := FromPtr(ptr); !reflect.DeepEqual(got, tt.want) {
+					t.Errorf("FromPtr() = %v, want %v", got, tt.want)
+				}
+			case *bool:
+				if got := FromPtr(ptr); !reflect.DeepEqual(got, tt.want) {
+					t.Errorf("FromPtr() = %v, want %v", got, tt.want)
+				}
+			}
+		})
+	}
+}
