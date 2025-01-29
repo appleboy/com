@@ -1,226 +1,52 @@
 package array
 
 import (
-	"reflect"
-	"strconv"
 	"testing"
 )
 
-func BenchmarkArrayInMap(b *testing.B) {
-	newString := []string{}
-	for i := 0; i < 100; i++ {
-		newString = append(newString, strconv.Itoa(i))
-	}
-	for i := 0; i < b.N; i++ {
-		InMap("99", newString)
-	}
+// BenchmarkContains benchmarks the performance of the Contains function.
+func BenchmarkContains(b *testing.B) {
+	b.Run("10 fileds", func(b *testing.B) {
+		slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+		key := 5
+		b.ReportAllocs()
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			Contains(slice, key)
+		}
+	})
+
+	b.Run("100 fileds", func(b *testing.B) {
+		slice := make([]int, 100)
+		for i := 0; i < 100; i++ {
+			slice[i] = i
+		}
+		key := 50
+		b.ReportAllocs()
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			Contains(slice, key)
+		}
+	})
+
+	b.Run("1000 fileds", func(b *testing.B) {
+		slice := make([]int, 1000)
+		for i := 0; i < 1000; i++ {
+			slice[i] = i
+		}
+		key := 500
+		b.ReportAllocs()
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			Contains(slice, key)
+		}
+	})
 }
 
-func BenchmarkArrayInSlice(b *testing.B) {
-	newString := []string{}
-	for i := 0; i < 100; i++ {
-		newString = append(newString, strconv.Itoa(i))
-	}
-	for i := 0; i < b.N; i++ {
-		InSlice("99", newString)
-	}
-}
-
-func BenchmarkIn(b *testing.B) {
-	newString := []string{}
-	for i := 0; i < 100; i++ {
-		newString = append(newString, strconv.Itoa(i))
-	}
-	for i := 0; i < b.N; i++ {
-		In("99", newString)
-	}
-}
-
-func BenchmarkInArray(b *testing.B) {
-	newString := []string{}
-	for i := 0; i < 100; i++ {
-		newString = append(newString, strconv.Itoa(i))
-	}
-	for i := 0; i < b.N; i++ {
-		InArray("99", newString)
-	}
-}
-
-func TestIn(t *testing.T) {
+func TestContains(t *testing.T) {
 	type args struct {
-		needle   string
-		haystack []string
-	}
-	tests := []struct {
-		name  string
-		args  args
-		want  []string
-		want1 bool
-	}{
-		{
-			name: "test in array",
-			args: args{
-				needle:   "a",
-				haystack: []string{"a", "b", "c"},
-			},
-			want:  []string{"b", "c"},
-			want1: true,
-		},
-		{
-			name: "test not in array",
-			args: args{
-				needle:   "d",
-				haystack: []string{"a", "b", "c"},
-			},
-			want:  []string{"a", "b", "c"},
-			want1: false,
-		},
-		{
-			name: "test empty target array",
-			args: args{
-				needle:   "d",
-				haystack: []string{},
-			},
-			want:  []string{},
-			want1: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := In(tt.args.needle, tt.args.haystack)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("In() got = %v, want %v", got, tt.want)
-			}
-			if got1 != tt.want1 {
-				t.Errorf("In() got1 = %v, want %v", got1, tt.want1)
-			}
-		})
-	}
-}
-
-func TestDiff(t *testing.T) {
-	type args struct {
-		s []string
-		t []string
-	}
-	tests := []struct {
-		name string
-		args args
-		want []string
-	}{
-		{
-			name: "test not in array",
-			args: args{
-				s: []string{"d"},
-				t: []string{"a", "b", "c"},
-			},
-			want: []string{"d", "a", "b", "c"},
-		},
-		{
-			name: "test partial not in array",
-			args: args{
-				s: []string{"a", "c"},
-				t: []string{"a", "b", "c"},
-			},
-			want: []string{"b"},
-		},
-		{
-			name: "test all match in array",
-			args: args{
-				s: []string{"a", "c", "b"},
-				t: []string{"a", "b", "c"},
-			},
-			want: []string{},
-		},
-		{
-			name: "test empty source in array",
-			args: args{
-				s: []string{},
-				t: []string{"a", "b"},
-			},
-			want: []string{"a", "b"},
-		},
-		{
-			name: "test empty target in array",
-			args: args{
-				s: []string{"a", "b"},
-				t: []string{},
-			},
-			want: []string{"a", "b"},
-		},
-		{
-			name: "test empty source and target",
-			args: args{
-				s: []string{},
-				t: []string{},
-			},
-			want: []string{},
-		},
-		{
-			name: "test source len > target len",
-			args: args{
-				s: []string{"a", "b", "c", "d", "e"},
-				t: []string{"a", "c"},
-			},
-			want: []string{"b", "d", "e"},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := Diff(tt.args.s, tt.args.t); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Diff() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestInValue(t *testing.T) {
-	s := []string{"59bf2170ceadf87a1e7e1ab4", "59bf2170ceadf87a1e7e1ab5", "5a2899f460faae1623882b5b"}
-	tt := "59bf2170ceadf87a1e7e1ab4"
-	want := []string{"59bf2170ceadf87a1e7e1ab5", "5a2899f460faae1623882b5b"}
-	wantOK := true
-	wantS := []string{"59bf2170ceadf87a1e7e1ab4", "59bf2170ceadf87a1e7e1ab5", "5a2899f460faae1623882b5b"}
-
-	got, ok := In(tt, s)
-
-	if ok != wantOK {
-		t.Errorf("bool = %v, want %v", ok, wantOK)
-	}
-
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("In() = %v, want %v", got, want)
-	}
-
-	if !reflect.DeepEqual(s, wantS) {
-		t.Errorf("s = %v, want %v", s, wantS)
-	}
-}
-
-func TestDiffValue(t *testing.T) {
-	s := []string{"59bf2170ceadf87a1e7e1ab4", "59bf2170ceadf87a1e7e1ab5", "5a2899f460faae1623882b5b"}
-	tt := []string{"59bf2170ceadf87a1e7e1ab4", "5a2899f460faae1623882b5b", "59bf2170ceadf87a1e7e1ab5"}
-	want := []string{}
-	wantS := []string{"59bf2170ceadf87a1e7e1ab4", "59bf2170ceadf87a1e7e1ab5", "5a2899f460faae1623882b5b"}
-	wantT := []string{"59bf2170ceadf87a1e7e1ab4", "5a2899f460faae1623882b5b", "59bf2170ceadf87a1e7e1ab5"}
-
-	got := Diff(s, tt)
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Diff() = %v, want %v", got, want)
-	}
-
-	if !reflect.DeepEqual(s, wantS) {
-		t.Errorf("s = %v, want %v", s, wantS)
-	}
-
-	if !reflect.DeepEqual(tt, wantT) {
-		t.Errorf("tt = %v, want %v", t, wantT)
-	}
-}
-
-func TestInSliceInt64(t *testing.T) {
-	type args struct {
-		needle   int64
-		haystack []int64
+		slice []int
+		key   int
 	}
 	tests := []struct {
 		name string
@@ -228,26 +54,50 @@ func TestInSliceInt64(t *testing.T) {
 		want bool
 	}{
 		{
-			name: "found",
+			name: "key exists in slice",
 			args: args{
-				needle:   64,
-				haystack: []int64{64, 128},
+				slice: []int{1, 2, 3, 4, 5},
+				key:   3,
 			},
 			want: true,
 		},
 		{
-			name: "not found",
+			name: "key does not exist in slice",
 			args: args{
-				needle:   64,
-				haystack: []int64{128},
+				slice: []int{1, 2, 3, 4, 5},
+				key:   6,
+			},
+			want: false,
+		},
+		{
+			name: "empty slice",
+			args: args{
+				slice: []int{},
+				key:   1,
+			},
+			want: false,
+		},
+		{
+			name: "single element slice, key exists",
+			args: args{
+				slice: []int{1},
+				key:   1,
+			},
+			want: true,
+		},
+		{
+			name: "single element slice, key does not exist",
+			args: args{
+				slice: []int{1},
+				key:   2,
 			},
 			want: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := InSliceInt64(tt.args.needle, tt.args.haystack); got != tt.want {
-				t.Errorf("InSliceInt64() = %v, want %v", got, tt.want)
+			if got := Contains(tt.args.slice, tt.args.key); got != tt.want {
+				t.Errorf("Contains() = %v, want %v", got, tt.want)
 			}
 		})
 	}
