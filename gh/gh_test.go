@@ -7,7 +7,9 @@ import (
 
 func TestSetOutput(t *testing.T) {
 	t.Run("GITHUB_OUTPUT not set", func(t *testing.T) {
-		os.Setenv("GITHUB_OUTPUT", "")
+		if err := os.Setenv("GITHUB_OUTPUT", ""); err != nil {
+			t.Fatal(err)
+		}
 		err := SetOutput(map[string]string{"key": "value"})
 		if err == nil {
 			t.Errorf("expected an error but got nil")
@@ -22,10 +24,20 @@ func TestSetOutput(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to create temp file: %v", err)
 		}
-		defer os.Remove(tempFile.Name())
+		defer func() {
+			if err := os.Remove(tempFile.Name()); err != nil {
+				t.Fatal(err)
+			}
+		}()
 
-		os.Setenv("GITHUB_OUTPUT", tempFile.Name())
-		defer os.Unsetenv("GITHUB_OUTPUT")
+		if err := os.Setenv("GITHUB_OUTPUT", tempFile.Name()); err != nil {
+			t.Fatal(err)
+		}
+		defer func() {
+			if err := os.Unsetenv("GITHUB_OUTPUT"); err != nil {
+				t.Fatal(err)
+			}
+		}()
 
 		err = SetOutput(map[string]string{"key": "value"})
 		if err != nil {
@@ -42,8 +54,14 @@ func TestSetOutput(t *testing.T) {
 	})
 
 	t.Run("GITHUB_OUTPUT set but file write fails", func(t *testing.T) {
-		os.Setenv("GITHUB_OUTPUT", "/invalid/path")
-		defer os.Unsetenv("GITHUB_OUTPUT")
+		if err := os.Setenv("GITHUB_OUTPUT", "/invalid/path"); err != nil {
+			t.Fatal(err)
+		}
+		defer func() {
+			if err := os.Unsetenv("GITHUB_OUTPUT"); err != nil {
+				t.Fatal(err)
+			}
+		}()
 
 		err := SetOutput(map[string]string{"key": "value"})
 		if err == nil {

@@ -48,25 +48,35 @@ func Copy(src, dst string, size int64) error {
 	}
 
 	if !sourceFileStat.Mode().IsRegular() {
-		return fmt.Errorf("%s is not a regular file.", src)
+		return fmt.Errorf("%s is not a regular file", src)
 	}
 
 	source, err := os.Open(src)
 	if err != nil {
 		return err
 	}
-	defer source.Close()
+	defer func() {
+		if cerr := source.Close(); cerr != nil {
+			// You can log or handle the error here if needed
+			_ = cerr
+		}
+	}()
 
 	_, err = os.Stat(dst)
 	if err == nil {
-		return fmt.Errorf("File %s already exists.", dst)
+		return fmt.Errorf("file %s already exists", dst)
 	}
 
 	destination, err := os.Create(dst)
 	if err != nil {
 		return err
 	}
-	defer destination.Close()
+	defer func() {
+		if cerr := destination.Close(); cerr != nil {
+			// You can log or handle the error here if needed
+			_ = cerr
+		}
+	}()
 
 	if err != nil {
 		panic(err)

@@ -16,7 +16,12 @@ func SetOutput(data map[string]string) error {
 	if err != nil {
 		return fmt.Errorf("failed to open file %s: %w", githubOutput, err)
 	}
-	defer file.Close()
+	defer func() {
+		if cerr := file.Close(); cerr != nil {
+			// You can log or handle the error here if needed
+			_ = cerr
+		}
+	}()
 
 	for k, v := range data {
 		_, err = fmt.Fprintf(file, "%s=%s\n", k, v)
