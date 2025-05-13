@@ -78,10 +78,6 @@ func Copy(src, dst string, size int64) error {
 		}
 	}()
 
-	if err != nil {
-		panic(err)
-	}
-
 	buf := make([]byte, size)
 	for {
 		n, err := source.Read(buf)
