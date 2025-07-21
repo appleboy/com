@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/appleboy/com/bytesconv"
 	"golang.org/x/text/encoding/traditionalchinese"
 	"golang.org/x/text/transform"
 )
@@ -211,15 +212,16 @@ func FromPtr[T any](ptr *T) T {
 	return *ptr
 }
 
-// ConvertBig5ToUTF8 converts a string encoded in Big5 to UTF-8 encoding.
-// It takes a string `s` as input and returns the UTF-8 encoded string.
-// If an error occurs during the conversion, it prints an error message and returns the original string.
+// ConvertBig5ToUTF8 converts a string encoded in Big5 to a UTF-8 encoded string.
+// The input parameter s must be a string encoded in Big5, and the function returns the corresponding UTF-8 string.
+// This function uses the Go standard library's transform package for conversion, which results in a string allocation.
+// If the conversion fails (e.g., if the input is not valid Big5), the original string is returned and no panic occurs.
 //
-// Parameters:
-//   - s: The input string encoded in Big5.
+// Usage Example:
 //
-// Returns:
-//   - The UTF-8 encoded string, or the original string if an error occurs.
+//	big5Str := "\xa4\xa4\xa4\xe5" // "中文" in Big5 encoding
+//	utf8Str := ConvertBig5ToUTF8(big5Str)
+//	fmt.Println(utf8Str) // Output: 中文
 func ConvertBig5ToUTF8(s string) string {
 	reader := transform.NewReader(
 		strings.NewReader(s),
@@ -229,5 +231,5 @@ func ConvertBig5ToUTF8(s string) string {
 	if err != nil {
 		return s
 	}
-	return string(d)
+	return bytesconv.BytesToStr(d)
 }
