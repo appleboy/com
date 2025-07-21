@@ -1,19 +1,5 @@
 package convert
 
-// Int64 returns a pointer to the int64 value passed in.
-func Int64(v int64) *int64 {
-	return &v
-}
-
-// Int64Value returns the value of the int64 pointer passed in or
-// 0 if the pointer is nil.
-func Int64Value(v *int64) int64 {
-	if v != nil {
-		return *v
-	}
-	return 0
-}
-
 // Int64Slice converts a slice of int64 values into a slice of
 // int64 pointers
 func Int64Slice(src []int64) []*int64 {
@@ -57,20 +43,6 @@ func Int64ValueMap(src map[string]*int64) map[string]int64 {
 		}
 	}
 	return dst
-}
-
-// String returns a pointer to the string value passed in.
-func String(v string) *string {
-	return &v
-}
-
-// StringValue returns the value of the string pointer passed in or
-// "" if the pointer is nil.
-func StringValue(v *string) string {
-	if v != nil {
-		return *v
-	}
-	return ""
 }
 
 // StringSlice converts a slice of string values into a slice of
@@ -118,20 +90,6 @@ func StringValueMap(src map[string]*string) map[string]string {
 	return dst
 }
 
-// Bool returns a pointer to the bool value passed in.
-func Bool(v bool) *bool {
-	return &v
-}
-
-// BoolValue returns the value of the bool pointer passed in or
-// false if the pointer is nil.
-func BoolValue(v *bool) bool {
-	if v != nil {
-		return *v
-	}
-	return false
-}
-
 // BoolSlice converts a slice of bool values into a slice of
 // bool pointers
 func BoolSlice(src []bool) []*bool {
@@ -177,20 +135,6 @@ func BoolValueMap(src map[string]*bool) map[string]bool {
 	return dst
 }
 
-// Int returns a pointer to the int value passed in.
-func Int(v int) *int {
-	return &v
-}
-
-// IntValue returns the value of the string pointer passed in or
-// "" if the pointer is nil.
-func IntValue(v *int) int {
-	if v != nil {
-		return *v
-	}
-	return 0
-}
-
 // IntSlice converts a slice of int values into a slice of
 // int pointers
 func IntSlice(src []int) []*int {
@@ -234,20 +178,6 @@ func IntValueMap(src map[string]*int) map[string]int {
 		}
 	}
 	return dst
-}
-
-// Float64 returns a pointer to the float64 value passed in.
-func Float64(v float64) *float64 {
-	return &v
-}
-
-// Float64Value returns the value of the float64 pointer passed in or
-// 0 if the pointer is nil.
-func Float64Value(v *float64) float64 {
-	if v != nil {
-		return *v
-	}
-	return 0
 }
 
 // Float64Slice converts a slice of float64 values into a slice of
