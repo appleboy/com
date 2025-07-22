@@ -27,8 +27,13 @@ func TestStringWithCharset(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := StringWithCharset(tt.args.length, tt.args.charset); got != tt.want {
-				t.Errorf("stringWithCharset() = %v, want %v", got, tt.want)
+			got, err := StringWithCharset(tt.args.length, tt.args.charset)
+			if err != nil {
+				t.Errorf("StringWithCharset() error = %v, want nil", err)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("StringWithCharset() = %v, want %v", got, tt.want)
 			}
 		})
 	}

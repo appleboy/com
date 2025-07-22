@@ -3,45 +3,57 @@ package random
 import (
 	"crypto/rand"
 	mathrand "math/rand"
+	"sync"
 	"time"
-	"unsafe"
+
+	"github.com/appleboy/com/bytesconv"
 )
 
 type (
-	// Charset is string type
+	// Charset represents a set of characters to use for random string generation.
 	Charset string
 )
 
 const (
-	// Alphanumeric contain Alphabetic and Numeric
+	// Alphanumeric contains all alphabetic and numeric characters (A-Z, a-z, 0-9).
 	Alphanumeric Charset = Alphabetic + Numeric
-	// Alphabetic is \w+ \W
+	// Alphabetic contains all uppercase and lowercase English letters (A-Z, a-z).
 	Alphabetic Charset = "abcdefghijklmnopqrstuvwxyz" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	// Numeric is number list
+	// Numeric contains all decimal digits (0-9).
 	Numeric Charset = "0123456789"
-	// Hex is Hexadecimal
+	// Hex contains all hexadecimal digits (0-9, a-f).
 	Hex Charset = Numeric + "abcdef"
 )
 
-func randomBytes(n int) []byte {
+/*
+randomBytes returns a slice of n cryptographically secure random bytes.
+It returns an error if the system's secure random number generator fails.
+*/
+func randomBytes(n int) ([]byte, error) {
 	bytes := make([]byte, n)
 	_, err := rand.Read(bytes)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-
-	return bytes
+	return bytes, nil
 }
 
-// StringWithCharset support rand string you defined
-func StringWithCharset(byteLen int, charset Charset) string {
-	bytes := randomBytes(byteLen)
+/*
+StringWithCharset returns a cryptographically secure random string of the given byte length,
+using the provided charset. The randomness is suitable for security-sensitive use cases.
+Returns an error if the system's secure random number generator fails.
+*/
+func StringWithCharset(byteLen int, charset Charset) (string, error) {
+	bytes, err := randomBytes(byteLen)
+	if err != nil {
+		return "", err
+	}
 	length := len(charset)
 	for i, b := range bytes {
 		bytes[i] = charset[b%byte(length)]
 	}
 
-	return string(bytes)
+	return bytesconv.BytesToStr(bytes), nil
 }
 
 // ref: https://stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-go
@@ -53,11 +65,20 @@ const (
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
 
-var src = mathrand.NewSource(time.Now().UnixNano())
+var (
+	src = mathrand.New(mathrand.NewSource(time.Now().UnixNano()))
+	mu  sync.Mutex
+)
 
+/*
+randStringBytesMaskImprSrcUnsafe returns a random string of the given length using math/rand.
+This function is optimized for speed but is NOT suitable for cryptographic or security-sensitive use cases.
+*/
 func randStringBytesMaskImprSrcUnsafe(n int) string {
 	b := make([]byte, n)
 	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
+	mu.Lock()
+	defer mu.Unlock()
 	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
 		if remain == 0 {
 			cache, remain = src.Int63(), letterIdxMax
@@ -70,10 +91,30 @@ func randStringBytesMaskImprSrcUnsafe(n int) string {
 		remain--
 	}
 
-	return *(*string)(unsafe.Pointer(&b))
+	return bytesconv.BytesToStr(b)
 }
 
-// String supply rand string
+/*
+String returns a random string of the given length using a fast, non-cryptographically secure generator.
+For security-sensitive use cases, use StringWithCharset instead.
+*/
 func String(length int) string {
 	return randStringBytesMaskImprSrcUnsafe(length)
+}
+
+/*
+RandomString returns a random string of the given length using the provided charset.
+If secure is true, it uses a cryptographically secure random generator (returns error on failure).
+If secure is false, it uses a fast, non-cryptographically secure generator (never returns error).
+If charset is empty, Alphanumeric is used.
+*/
+func RandomString(length int, charset Charset, secure bool) (string, error) {
+	if charset == "" {
+		charset = Alphanumeric
+	}
+	if secure {
+		return StringWithCharset(length, charset)
+	}
+	// Fast, insecure method ignores charset and always uses letterBytes
+	return randStringBytesMaskImprSrcUnsafe(length), nil
 }
