@@ -5,39 +5,94 @@
 [![codecov](https://codecov.io/gh/appleboy/com/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/com)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/com)](https://goreportcard.com/report/github.com/appleboy/com)
 
-This is an open source project for commonly used functions for the [Go programming language](https://golang.org/).
+**Common Functions** is an open source collection of utility functions designed to simplify and accelerate Go development. This library provides robust, reusable helpers for common programming tasks such as random value generation, array and slice manipulation, file operations, and data type conversions. By centralizing frequently needed logic, it helps Go developers write cleaner, more efficient, and maintainable code across a wide range of projects.
 
 ## Feature
 
-* [x] Random
-* [x] Array
-* [x] File
-* [x] Convert
+- [x] Random
+- [x] Array
+- [x] File
+- [x] Convert
 
-## Benchmrk
+## Package Usage
 
-```sh
-goos: linux
-goarch: amd64
-pkg: github.com/appleboy/com/array
-cpu: Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz
-BenchmarkArrayInMap
-BenchmarkArrayInMap-2           411962          8343 ns/op        5224 B/op           8 allocs/op
-BenchmarkArrayInSlice
-BenchmarkArrayInSlice-2        4165724           863.8 ns/op           0 B/op           0 allocs/op
-BenchmarkIn
-BenchmarkIn-2                  4610620           776.3 ns/op        1792 B/op           1 allocs/op
-BenchmarkInArray
-BenchmarkInArray-2              388922          9177 ns/op        1624 B/op         101 allocs/op
-PASS
-ok      github.com/appleboy/com/array    16.040s
-goos: linux
-goarch: amd64
-pkg: github.com/appleboy/com/convert
-cpu: Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz
-BenchmarkCountParamsOld
-BenchmarkCountParamsOld-2             2575500          1400 ns/op           0 B/op           0 allocs/op
-BenchmarkCountParamsNew
-BenchmarkCountParamsNew-2            33431834           108.5 ns/op           0 B/op           0 allocs/op
-BenchmarkBytesToStrOld01
+### array
+
+Check if a value exists in a slice.
+
+```go
+import "github.com/appleboy/com/array"
+
+found := array.Contains([]int{1, 2, 3}, 2) // true
+```
+
+### bytesconv
+
+Zero-allocation conversion between string and []byte.
+
+```go
+import "github.com/appleboy/com/bytesconv"
+
+b := bytesconv.StrToBytes("hello")
+s := bytesconv.BytesToStr([]byte{'w', 'o', 'r', 'l', 'd'})
+```
+
+### convert
+
+String case conversion, MD5 hashing, and float/byte conversion.
+
+```go
+import "github.com/appleboy/com/convert"
+
+snake := convert.SnakeCasedName("FooBar") // "foo_bar"
+title := convert.TitleCasedName("foo_bar") // "FooBar"
+hash := convert.MD5Hash("data")
+b := convert.Float64ToByte(3.14)
+f := convert.ByteToFloat64(b)
+```
+
+### file
+
+File and directory utilities.
+
+```go
+import "github.com/appleboy/com/file"
+
+isDir, _ := file.IsDir("/tmp")
+isFile, _ := file.IsFile("/tmp/file.txt")
+_ = file.Copy("src.txt", "dst.txt")
+_ = file.Remove("/tmp/old")
+```
+
+### gh
+
+Set GitHub Actions output variables.
+
+```go
+import "github.com/appleboy/com/gh"
+
+_ = gh.SetOutput(map[string]string{"key": "value"})
+```
+
+### random
+
+Generate random strings for various use cases.
+
+```go
+import "github.com/appleboy/com/random"
+
+s, _ := random.StringWithCharset(16, random.Alphanumeric) // secure random string
+fast := random.randStringBytesMaskImprSrcUnsafe(16) // fast, not secure
+```
+
+### trace
+
+Measure and log function execution time.
+
+```go
+import "github.com/appleboy/com/trace"
+
+trace.ExecuteTime("myTask", func() {
+    // code to measure
+})
 ```
