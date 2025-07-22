@@ -6,47 +6,45 @@ import (
 	"os"
 )
 
-// IsDir returns true if given path is a directory,
-// or returns false when it's a file or does not exist.
-func IsDir(dir string) bool {
-	f, e := os.Stat(dir)
-	if e != nil {
-		return false
+/*
+IsDir returns (true, nil) if the given path is a directory.
+Returns (false, nil) if it's a file.
+Returns (false, error) if the path does not exist or other error occurs.
+*/
+func IsDir(dir string) (bool, error) {
+	f, err := os.Stat(dir)
+	if err != nil {
+		return false, err
 	}
-	return f.IsDir()
+	return f.IsDir(), nil
 }
 
-// IsFile returns true if given path is a file,
-// or returns false when it's a directory or does not exist.
-func IsFile(filePath string) bool {
-	f, e := os.Stat(filePath)
-	if e != nil {
-		return false
+// IsFile returns (true, nil) if given path is a file.
+// Returns (false, nil) if it's a directory.
+// Returns (false, error) if the path does not exist or other error occurs.
+func IsFile(filePath string) (bool, error) {
+	f, err := os.Stat(filePath)
+	if err != nil {
+		return false, err
 	}
-	return !f.IsDir()
+	return !f.IsDir(), nil
 }
 
-// Remove removes single file or path and any children it contains.
-// It removes everything it can but returns the first error it encounters.
-// If the path does not exist, RemoveAll returns nil (no error).
+// Remove removes the file or directory at the given path, including any children if it's a directory.
+// If the path does not exist, Remove returns nil (no error).
 // If there is an error, it will be of type *PathError.
 func Remove(filePath string) error {
-	if IsDir(filePath) {
-		return os.RemoveAll(filePath)
-	}
-
-	return os.Remove(filePath)
+	return os.RemoveAll(filePath)
 }
 
 // Copy files
-// See the ref:
-// https://opensource.com/article/18/6/copying-files-go
-func Copy(src, dst string, size int64) error {
+// Copy copies a regular file from src to dst. If dst exists, returns error.
+// Uses io.Copy for efficient file transfer.
+func Copy(src, dst string) error {
 	sourceFileStat, err := os.Stat(src)
 	if err != nil {
 		return err
 	}
-
 	if !sourceFileStat.Mode().IsRegular() {
 		return fmt.Errorf("%s is not a regular file", src)
 	}
@@ -55,15 +53,9 @@ func Copy(src, dst string, size int64) error {
 	if err != nil {
 		return err
 	}
-	defer func() {
-		if cerr := source.Close(); cerr != nil {
-			// You can log or handle the error here if needed
-			_ = cerr
-		}
-	}()
+	defer source.Close()
 
-	_, err = os.Stat(dst)
-	if err == nil {
+	if _, err := os.Stat(dst); err == nil {
 		return fmt.Errorf("file %s already exists", dst)
 	}
 
@@ -71,26 +63,10 @@ func Copy(src, dst string, size int64) error {
 	if err != nil {
 		return err
 	}
-	defer func() {
-		if cerr := destination.Close(); cerr != nil {
-			// You can log or handle the error here if needed
-			_ = cerr
-		}
-	}()
+	defer destination.Close()
 
-	buf := make([]byte, size)
-	for {
-		n, err := source.Read(buf)
-		if err != nil && err != io.EOF {
-			return err
-		}
-		if n == 0 {
-			break
-		}
-
-		if _, err := destination.Write(buf[:n]); err != nil {
-			return err
-		}
+	if _, err := io.Copy(destination, source); err != nil {
+		return err
 	}
-	return err
+	return nil
 }

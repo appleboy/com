@@ -33,7 +33,11 @@ func TestIsDir(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsDir(tt.args.dir); got != tt.want {
+			got, err := IsDir(tt.args.dir)
+			if err != nil && tt.want {
+				t.Errorf("IsDir() error = %v, want %v", err, tt.want)
+			}
+			if got != tt.want {
 				t.Errorf("IsDir() = %v, want %v", got, tt.want)
 			}
 		})
@@ -71,7 +75,11 @@ func TestIsFile(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsFile(tt.args.filePath); got != tt.want {
+			got, err := IsFile(tt.args.filePath)
+			if err != nil && tt.want {
+				t.Errorf("IsFile() error = %v, want %v", err, tt.want)
+			}
+			if got != tt.want {
 				t.Errorf("IsFile() = %v, want %v", got, tt.want)
 			}
 		})
