@@ -6,89 +6,87 @@ import (
 	"encoding/hex"
 	"math"
 	"strings"
-
-	"github.com/appleboy/com/bytesconv"
 )
 
-// MD5Hash for md5 hash string
+/*
+MD5Hash computes the MD5 hash of the input string and returns a 32-character hexadecimal string.
+- Useful for data validation, generating unique identifiers, etc.
+- Warning: MD5 is not recommended for password hashing or security-sensitive use cases.
+*/
 func MD5Hash(text string) string {
 	hasher := md5.New()
 	hasher.Write([]byte(text))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-// SnakeCasedName convert String into Snake Case
-// ex: FooBar -> foo_bar
-func snakeCasedNameOld(name string) string {
-	newstr := make([]rune, 0)
-	for idx, chr := range name {
-		if isUpper := 'A' <= chr && chr <= 'Z'; isUpper {
-			if idx > 0 {
-				newstr = append(newstr, '_')
-			}
-			chr -= ('A' - 'a')
-		}
-		newstr = append(newstr, chr)
-	}
-
-	return string(newstr)
-}
-
-// SnakeCasedName convert String into Snake Case
-// ex: FooBar -> foo_bar
+/*
+SnakeCasedName converts a string to snake_case format and supports Unicode characters.
+- Each uppercase English letter (A-Z) is converted to lowercase and prefixed with an underscore if not at the start.
+- Only English letters are affected; other Unicode characters (e.g., Chinese) are preserved as-is.
+- Example: FooBar -> foo_bar, 你好World -> 你好_world
+*/
 func SnakeCasedName(name string) string {
-	newstr := make([]byte, 0, len(name)+1)
-	for i := 0; i < len(name); i++ {
-		c := name[i]
-		if isUpper := 'A' <= c && c <= 'Z'; isUpper {
+	var b strings.Builder
+	b.Grow(len(name) + 1)
+	for i, r := range name {
+		if isUpper := 'A' <= r && r <= 'Z'; isUpper {
 			if i > 0 {
-				newstr = append(newstr, '_')
+				b.WriteRune('_')
 			}
-			c += 'a' - 'A'
+			r += 'a' - 'A'
 		}
-		newstr = append(newstr, c)
+		b.WriteRune(r)
 	}
-
-	return bytesconv.BytesToStr(newstr)
+	return b.String()
 }
 
-// TitleCasedName convert String into title cased
-// ex: foo_bar -> FooBar
+/*
+TitleCasedName converts a snake_case string to TitleCase format and supports Unicode characters.
+- Each English letter following an underscore is capitalized, and underscores are removed.
+- Only English letters are affected; other Unicode characters (e.g., Chinese) are preserved as-is.
+- Example: foo_bar -> FooBar, hello_世界 -> Hello世界
+*/
 func TitleCasedName(name string) string {
-	newstr := make([]byte, 0, len(name))
+	var b strings.Builder
+	b.Grow(len(name))
 	upNextChar := true
 
-	name = strings.ToLower(name)
-
-	for i := 0; i < len(name); i++ {
-		c := name[i]
+	for _, r := range name {
 		switch {
 		case upNextChar:
 			upNextChar = false
-			if 'a' <= c && c <= 'z' {
-				c -= 'a' - 'A'
+			if 'a' <= r && r <= 'z' {
+				r -= 'a' - 'A'
 			}
-		case c == '_':
+		case r == '_':
 			upNextChar = true
 			continue
 		}
-
-		newstr = append(newstr, c)
+		b.WriteRune(r)
 	}
-
-	return bytesconv.BytesToStr(newstr)
+	return b.String()
 }
 
-// Float64ToByte convert float64 to byte
-// ref: https://stackoverflow.com/questions/43693360/convert-float64-to-byte-array
+/*
+Float64ToByte converts a float64 value to an 8-byte slice in BigEndian order.
+- Useful for binary serialization and network transmission.
+- Reference: https://stackoverflow.com/questions/43693360/convert-float64-to-byte-array
+*/
 func Float64ToByte(f float64) []byte {
 	var buf [8]byte
 	binary.BigEndian.PutUint64(buf[:], math.Float64bits(f))
 	return buf[:]
 }
 
-// ByteToFloat64 convert byte to float64
+/*
+ByteToFloat64 converts an 8-byte slice in BigEndian order back to a float64 value.
+- Panics if the input length is not 8.
+- Useful for binary deserialization and network data parsing.
+*/
 func ByteToFloat64(bytes []byte) float64 {
+	if len(bytes) != 8 {
+		panic("ByteToFloat64: input length must be 8 bytes")
+	}
 	bits := binary.BigEndian.Uint64(bytes)
 	return math.Float64frombits(bits)
 }

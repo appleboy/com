@@ -189,10 +189,7 @@ func BenchmarkSnakeCasedNameOld(b *testing.B) {
 	b.ReportAllocs()
 	b.ResetTimer()
 
-	s := strings.Repeat("FooBar", 32)
-	for i := 0; i < b.N; i++ {
-		_ = snakeCasedNameOld(s)
-	}
+	// snakeCasedNameOld 已移除，不再進行此 benchmark
 }
 
 func BenchmarkSnakeCasedNameNew(b *testing.B) {
