@@ -7,13 +7,6 @@
 
 **Common Functions** is an open source collection of utility functions designed to simplify and accelerate Go development. This library provides robust, reusable helpers for common programming tasks such as random value generation, array and slice manipulation, file operations, and data type conversions. By centralizing frequently needed logic, it helps Go developers write cleaner, more efficient, and maintainable code across a wide range of projects.
 
-## Feature
-
-- [x] Random
-- [x] Array
-- [x] File
-- [x] Convert
-
 ## Package Usage
 
 ### array
