@@ -53,7 +53,11 @@ func Copy(src, dst string) error {
 	if err != nil {
 		return err
 	}
-	defer source.Close()
+	defer func() {
+		if cerr := source.Close(); cerr != nil {
+			fmt.Printf("failed to close source file: %v\n", cerr)
+		}
+	}()
 
 	if _, err := os.Stat(dst); err == nil {
 		return fmt.Errorf("file %s already exists", dst)
@@ -63,7 +67,11 @@ func Copy(src, dst string) error {
 	if err != nil {
 		return err
 	}
-	defer destination.Close()
+	defer func() {
+		if cerr := destination.Close(); cerr != nil {
+			fmt.Printf("failed to close destination file: %v\n", cerr)
+		}
+	}()
 
 	if _, err := io.Copy(destination, source); err != nil {
 		return err

@@ -84,7 +84,10 @@ func BenchmarkRandStringOld(b *testing.B) {
 
 func BenchmarkRandStringNew(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		StringWithCharset(16, Alphanumeric)
+		_, err := StringWithCharset(16, Alphanumeric)
+		if err != nil {
+			b.Fatal(err)
+		}
 	}
 }
 
