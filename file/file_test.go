@@ -1,6 +1,7 @@
 package file
 
 import (
+	"fmt"
 	"os"
 	"testing"
 )
@@ -81,6 +82,42 @@ func TestIsFile(t *testing.T) {
 			}
 			if got != tt.want {
 				t.Errorf("IsFile() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+// TestFormatSize tests the FormatSize function for various input cases.
+func TestFormatSize(t *testing.T) {
+	tests := []struct {
+		bytes    int64
+		expected string
+	}{
+		{0, "0 B"},
+		{9, "9 B"},
+		{512, "512 B"},
+		{1023, "1023 B"},
+		{1024, "1.0 KB"},
+		{1536, "1.5 KB"},
+		{10 * 1024, "10.0 KB"},
+		{1024*1024 - 1, "1024.0 KB"},
+		{1024 * 1024, "1.0 MB"},
+		{1536 * 1024, "1.5 MB"},
+		{1024 * 1024 * 10, "10.0 MB"},
+		{1024*1024*1024 - 1, "1024.0 MB"},
+		{1024 * 1024 * 1024, "1.0 GB"},
+		{1536 * 1024 * 1024, "1.5 GB"},
+		{1024 * 1024 * 1024 * 10, "10.0 GB"},
+		{1024 * 1024 * 1024 * 1024, "1.0 TB"},
+		{1024 * 1024 * 1024 * 1024 * 1024, "1.0 PB"},
+		{1024 * 1024 * 1024 * 1024 * 1024 * 1024, "1.0 EB"},
+	}
+
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%d bytes", tt.bytes), func(t *testing.T) {
+			result := FormatSize(tt.bytes)
+			if result != tt.expected {
+				t.Errorf("FormatSize(%d) = %q; want %q", tt.bytes, result, tt.expected)
 			}
 		})
 	}
