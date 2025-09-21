@@ -43,15 +43,18 @@ func main() {
 Checks if a given key of any comparable type exists within a slice.
 
 **Parameters:**
+
 - `slice`: A slice of any comparable type T
 - `key`: An element of type T to search for within the slice
 
 **Returns:**
+
 - `bool`: True if the key is found in the slice, false otherwise
 
 **Time Complexity:** O(n), where n is the length of the slice.
 
 **Notes:**
+
 - Suitable for small to medium slices or infrequent lookups
 - For large slices with frequent lookups, consider using a map for better performance
 - Works with any comparable type (int, string, float64, etc.)
