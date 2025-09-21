@@ -80,9 +80,11 @@ func main() {
 Converts a string to a byte slice without memory allocation.
 
 **Parameters:**
+
 - `s`: Input string to convert
 
 **Returns:**
+
 - `[]byte`: Byte slice representation of the string
 
 ### `BytesToStr(b []byte) string`
@@ -90,9 +92,11 @@ Converts a string to a byte slice without memory allocation.
 Converts a byte slice to a string without memory allocation.
 
 **Parameters:**
+
 - `b`: Input byte slice to convert
 
 **Returns:**
+
 - `string`: String representation of the byte slice
 
 ## Implementation Details
@@ -105,6 +109,7 @@ Converts a byte slice to a string without memory allocation.
 ## Performance
 
 These functions provide significant performance benefits over standard conversions:
+
 - `StrToBytes()` vs `[]byte(s)`: No allocation, much faster
 - `BytesToStr()` vs `string(b)`: No allocation, much faster
 
