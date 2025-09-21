@@ -129,7 +129,9 @@ func main() {
     
     // Convert to TitleCase
     title := convert.TitleCasedName("foo_bar_test")
-5 hash
+    fmt.Println(title) // Output: FooBarTest
+    
+    // MD5 hash
     hash := convert.MD5Hash("hello world")
     fmt.Println(hash) // Output: 5d41402abc4b2a76b9719d911017c592
 }
@@ -174,50 +176,3 @@ func main() {
     fmt.Println(utf8Str) // Output: 你好
 }
 ```
-
-## API Reference
-
-### Basic Type Conversions
-
-- `ToString(value interface{}) string` - Converts any type to string
-- `ToBool(value interface{}) bool` - Converts various types to boolean
-- `ToInt(value interface{}) interface{}` - Converts to int, returns nil if fails
-- `ToFloat(value interface{}) interface{}` - Converts to float64
-
-### Pointer Utilities
-
-- `ToPtr[T any](value T) *T` - Converts value to pointer
-- `FromPtr[T any](ptr *T) T` - Converts pointer to value (zero value if nil)
-
-### Collection Conversions
-
-- `SliceToPtrSlice[T any](src []T) []*T` - Converts slice to pointer slice
-- `PtrSliceToSlice[T any](src []*T) []T` - Converts pointer slice to values
-- `MapToPtrMap[T any](src map[string]T) map[string]*T` - Converts map to pointer map
-- `PtrMapToMap[T any](src map[string]*T) map[string]T` - Converts pointer map to values
-
-### String Utilities
-
-- `MD5Hash(text string) string` - Computes MD5 hash (32-char hex string)
-- `SnakeCasedName(name string) string` - Converts to snake_case
-- `TitleCasedName(name string) string` - Converts snake_case to TitleCase
-
-### Binary Conversion
-
-- `Float64ToByte(f float64) []byte` - Converts float64 to 8-byte BigEndian slice
-- `ByteToFloat64(bytes []byte) float64` - Converts 8-byte slice to float64
-
-### Encoding Conversion
-
-- `ConvertBig5ToUTF8(s string) string` - Converts Big5 encoded string to UTF-8
-
-## Notes
-
-- `ToInt()` and `ToFloat()` return `interface{}` (nil on failure) for type safety
-- String utilities support Unicode characters but only affect English letters
-- Binary conversion uses BigEndian byte order
-- Collection conversions handle nil pointers gracefully
-- MD5 hashing is for non-cryptographic purposes only
-    fmt.Println(title) // Output: FooBarTest
-    
-    // MD
