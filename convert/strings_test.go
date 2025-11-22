@@ -107,7 +107,11 @@ func TestFloat64ToByteAndBack(t *testing.T) {
 			b := Float64ToByte(tt.val)
 			got := ByteToFloat64(b)
 			if got != tt.val {
-				t.Errorf("Float64ToByte/ByteToFloat64 roundtrip failed: got %v, want %v", got, tt.val)
+				t.Errorf(
+					"Float64ToByte/ByteToFloat64 roundtrip failed: got %v, want %v",
+					got,
+					tt.val,
+				)
 			}
 		})
 	}

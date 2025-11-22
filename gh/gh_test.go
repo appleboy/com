@@ -50,7 +50,10 @@ func TestSetOutput(t *testing.T) {
 			t.Fatalf("failed to read temp file: %v", err)
 		}
 		if !contains(string(content), "key=value\n") {
-			t.Errorf("expected file content to contain 'key=value\\n' but got '%s'", string(content))
+			t.Errorf(
+				"expected file content to contain 'key=value\\n' but got '%s'",
+				string(content),
+			)
 		}
 	})
 
@@ -69,7 +72,10 @@ func TestSetOutput(t *testing.T) {
 			t.Errorf("expected an error but got nil")
 		}
 		if !contains(err.Error(), "failed to open file") {
-			t.Errorf("expected error message to contain 'failed to open file' but got '%s'", err.Error())
+			t.Errorf(
+				"expected error message to contain 'failed to open file' but got '%s'",
+				err.Error(),
+			)
 		}
 	})
 
@@ -111,7 +117,10 @@ func TestSetOutput(t *testing.T) {
 		}
 		// Check that the multiline value is present
 		if !strings.Contains(contentStr, "line1\nline2\nline3") {
-			t.Errorf("expected file content to contain the multiline value but got '%s'", contentStr)
+			t.Errorf(
+				"expected file content to contain the multiline value but got '%s'",
+				contentStr,
+			)
 		}
 		// Check that it has a delimiter
 		if !strings.Contains(contentStr, "ghdelimiter") {
@@ -159,10 +168,16 @@ func TestSetOutput(t *testing.T) {
 		}
 		// Check multiline format uses heredoc
 		if !strings.Contains(contentStr, "multi<<") {
-			t.Errorf("expected file content to use heredoc syntax for multiline but got '%s'", contentStr)
+			t.Errorf(
+				"expected file content to use heredoc syntax for multiline but got '%s'",
+				contentStr,
+			)
 		}
 		if !strings.Contains(contentStr, "line1\nline2") {
-			t.Errorf("expected file content to contain the multiline value but got '%s'", contentStr)
+			t.Errorf(
+				"expected file content to contain the multiline value but got '%s'",
+				contentStr,
+			)
 		}
 	})
 }
