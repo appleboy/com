@@ -66,6 +66,7 @@ const (
 )
 
 var (
+	//nolint:gosec // G404: Using math/rand for non-cryptographic purposes only (fast string generation)
 	src = mathrand.New(mathrand.NewSource(time.Now().UnixNano()))
 	mu  sync.Mutex
 )
