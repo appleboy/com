@@ -24,14 +24,32 @@ func countParamsOld(path string) uint16 {
 			n++
 		}
 	}
+	// Clamp to uint16 max to prevent overflow
+	if n > 0xFFFF {
+		return 0xFFFF
+	}
 	return uint16(n)
 }
 
 func countParamsNew(path string) uint16 {
 	var n uint
 	s := bytesconv.StrToBytes(path)
-	n += uint(bytes.Count(s, strColon))
-	n += uint(bytes.Count(s, strStar))
+
+	// Safe conversion from int to uint with bounds checking
+	colonCount := bytes.Count(s, strColon)
+	if colonCount > 0 {
+		n += uint(colonCount)
+	}
+
+	starCount := bytes.Count(s, strStar)
+	if starCount > 0 {
+		n += uint(starCount)
+	}
+
+	// Clamp to uint16 max to prevent overflow
+	if n > 0xFFFF {
+		return 0xFFFF
+	}
 	return uint16(n)
 }
 
