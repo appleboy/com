@@ -1,7 +1,7 @@
 package convert
 
 import (
-	"crypto/md5"
+	"crypto/sha256"
 	"encoding/binary"
 	"encoding/hex"
 	"math"
@@ -9,12 +9,12 @@ import (
 )
 
 /*
-MD5Hash computes the MD5 hash of the input string and returns a 32-character hexadecimal string.
+MD5Hash computes the SHA-256 hash of the input string and returns a 64-character hexadecimal string.
 - Useful for data validation, generating unique identifiers, etc.
-- Warning: MD5 is not recommended for password hashing or security-sensitive use cases.
+- Note: Function name retained for backward compatibility, but now uses SHA-256 for improved security.
 */
 func MD5Hash(text string) string {
-	hasher := md5.New()
+	hasher := sha256.New()
 	hasher.Write([]byte(text))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
