@@ -60,95 +60,188 @@ func ToBool(value interface{}) bool {
 	return false
 }
 
+// isInInt32Range checks if an int value is within int32 range
+func isInInt32Range(value int) bool {
+	return value >= int(math.MinInt32) && value <= int(math.MaxInt32)
+}
+
+// isInt64InRange checks if an int64 value is within int32 range
+func isInt64InRange(value int64) bool {
+	return value >= int64(math.MinInt32) && value <= int64(math.MaxInt32)
+}
+
+// isUintInRange checks if a uint value is within int32 range
+func isUintInRange(value uint) bool {
+	return value <= math.MaxInt32
+}
+
+// isUint32InRange checks if a uint32 value is within int32 range
+func isUint32InRange(value uint32) bool {
+	return value <= uint32(math.MaxInt32)
+}
+
+// isUint64InRange checks if a uint64 value is within int32 range
+func isUint64InRange(value uint64) bool {
+	return value <= uint64(math.MaxInt32)
+}
+
+// isFloat32InRange checks if a float32 value is within int32 range
+func isFloat32InRange(value float32) bool {
+	return value >= float32(math.MinInt32) && value <= float32(math.MaxInt32)
+}
+
+// isFloat64InRange checks if a float64 value is within int32 range
+func isFloat64InRange(value float64) bool {
+	return value >= float64(math.MinInt32) && value <= float64(math.MaxInt32)
+}
+
 // ToInt convert any type to int
 func ToInt(value interface{}) interface{} {
 	switch value := value.(type) {
 	case bool:
-		if value {
-			return 1
-		}
-		return 0
+		return boolToInt(value)
 	case int:
-		if value < int(math.MinInt32) || value > int(math.MaxInt32) {
-			return nil
-		}
-		return value
+		return intToInt(value)
 	case *int:
 		return ToInt(*value)
-	case int8:
-		return int(value)
-	case *int8:
-		return int(*value)
-	case int16:
-		return int(value)
-	case *int16:
-		return int(*value)
-	case int32:
-		return int(value)
-	case *int32:
-		return int(*value)
+	case int8, *int8, int16, *int16, int32, *int32:
+		return handleSmallInts(value)
 	case int64:
-		if value < int64(math.MinInt32) || value > int64(math.MaxInt32) {
-			return nil
-		}
-		return int(value)
+		return int64ToInt(value)
 	case *int64:
 		return ToInt(*value)
-	case uint:
-		if value > math.MaxInt32 {
-			return nil
-		}
-		return int(value)
-	case *uint:
-		return ToInt(*value)
-	case uint8:
-		return int(value)
-	case *uint8:
-		return int(*value)
-	case uint16:
-		return int(value)
-	case *uint16:
-		return int(*value)
+	case uint, *uint, uint8, *uint8, uint16, *uint16:
+		return handleSmallUints(value)
 	case uint32:
-		if value > uint32(math.MaxInt32) {
-			return nil
-		}
-		return int(value)
+		return uint32ToInt(value)
 	case *uint32:
 		return ToInt(*value)
 	case uint64:
-		if value > uint64(math.MaxInt32) {
-			return nil
-		}
-		return int(value)
+		return uint64ToInt(value)
 	case *uint64:
 		return ToInt(*value)
 	case float32:
-		if value < float32(math.MinInt32) || value > float32(math.MaxInt32) {
-			return nil
-		}
-		return int(value)
+		return float32ToInt(value)
 	case *float32:
 		return ToInt(*value)
 	case float64:
-		if value < float64(math.MinInt32) || value > float64(math.MaxInt32) {
-			return nil
-		}
-		return int(value)
+		return float64ToInt(value)
 	case *float64:
 		return ToInt(*value)
 	case string:
-		val, err := strconv.ParseFloat(value, 32)
-		if err != nil {
-			return nil
-		}
-		return ToInt(val)
+		return stringToInt(value)
 	case *string:
 		return ToInt(*value)
 	}
 
 	// If the value cannot be transformed into an int, return nil instead of '0'
 	// to denote 'no integer found'
+	return nil
+}
+
+// boolToInt converts bool to int
+func boolToInt(value bool) int {
+	if value {
+		return 1
+	}
+	return 0
+}
+
+// intToInt validates and converts int to int
+func intToInt(value int) interface{} {
+	if !isInInt32Range(value) {
+		return nil
+	}
+	return value
+}
+
+// int64ToInt validates and converts int64 to int
+func int64ToInt(value int64) interface{} {
+	if !isInt64InRange(value) {
+		return nil
+	}
+	return int(value)
+}
+
+// uint32ToInt validates and converts uint32 to int
+func uint32ToInt(value uint32) interface{} {
+	if !isUint32InRange(value) {
+		return nil
+	}
+	return int(value)
+}
+
+// uint64ToInt validates and converts uint64 to int
+func uint64ToInt(value uint64) interface{} {
+	if !isUint64InRange(value) {
+		return nil
+	}
+	return int(value) // #nosec G115 -- range validated above
+}
+
+// float32ToInt validates and converts float32 to int
+func float32ToInt(value float32) interface{} {
+	if !isFloat32InRange(value) {
+		return nil
+	}
+	return int(value)
+}
+
+// float64ToInt validates and converts float64 to int
+func float64ToInt(value float64) interface{} {
+	if !isFloat64InRange(value) {
+		return nil
+	}
+	return int(value)
+}
+
+// stringToInt parses string and converts to int
+func stringToInt(value string) interface{} {
+	val, err := strconv.ParseFloat(value, 32)
+	if err != nil {
+		return nil
+	}
+	return ToInt(val)
+}
+
+// handleSmallInts handles int8, int16, int32 and their pointers
+func handleSmallInts(value interface{}) interface{} {
+	switch v := value.(type) {
+	case int8:
+		return int(v)
+	case *int8:
+		return int(*v)
+	case int16:
+		return int(v)
+	case *int16:
+		return int(*v)
+	case int32:
+		return int(v)
+	case *int32:
+		return int(*v)
+	}
+	return nil
+}
+
+// handleSmallUints handles uint, uint8, uint16 and their pointers
+func handleSmallUints(value interface{}) interface{} {
+	switch v := value.(type) {
+	case uint:
+		if !isUintInRange(v) {
+			return nil
+		}
+		return int(v) // #nosec G115 -- range validated above
+	case *uint:
+		return ToInt(*v)
+	case uint8:
+		return int(v)
+	case *uint8:
+		return int(*v)
+	case uint16:
+		return int(v)
+	case *uint16:
+		return int(*v)
+	}
 	return nil
 }
 

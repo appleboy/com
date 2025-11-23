@@ -6,180 +6,142 @@ import (
 	"testing"
 )
 
-func TestSetOutput(t *testing.T) {
-	t.Run("GITHUB_OUTPUT not set", func(t *testing.T) {
-		if err := os.Setenv("GITHUB_OUTPUT", ""); err != nil {
+// testEnv sets up a temporary file and environment for testing
+func testEnv(t *testing.T) (string, func()) {
+	t.Helper()
+	tempFile, err := os.CreateTemp("", "github_output")
+	if err != nil {
+		t.Fatalf("failed to create temp file: %v", err)
+	}
+
+	if err := os.Setenv("GITHUB_OUTPUT", tempFile.Name()); err != nil {
+		t.Fatal(err)
+	}
+
+	cleanup := func() {
+		if err := os.Unsetenv("GITHUB_OUTPUT"); err != nil {
+			t.Error(err)
+		}
+		if err := os.Remove(tempFile.Name()); err != nil {
+			t.Error(err)
+		}
+	}
+
+	return tempFile.Name(), cleanup
+}
+
+// readOutputFile reads the content of the output file
+func readOutputFile(t *testing.T, filePath string) string {
+	t.Helper()
+	content, err := os.ReadFile(filePath)
+	if err != nil {
+		t.Fatalf("failed to read temp file: %v", err)
+	}
+	return string(content)
+}
+
+// assertNoError asserts that error is nil
+func assertNoError(t *testing.T, err error) {
+	t.Helper()
+	if err != nil {
+		t.Errorf("expected no error but got %v", err)
+	}
+}
+
+// assertError asserts that error is not nil
+func assertError(t *testing.T, err error) {
+	t.Helper()
+	if err == nil {
+		t.Errorf("expected an error but got nil")
+	}
+}
+
+// assertErrorMessage asserts that error message matches expected
+func assertErrorMessage(t *testing.T, err error, expected string) {
+	t.Helper()
+	if err.Error() != expected {
+		t.Errorf("expected error message '%s' but got '%s'", expected, err.Error())
+	}
+}
+
+// assertContains asserts that string contains substring
+func assertContains(t *testing.T, s, substr string) {
+	t.Helper()
+	if !strings.Contains(s, substr) {
+		t.Errorf("expected content to contain '%s' but got '%s'", substr, s)
+	}
+}
+
+func TestSetOutputNotSet(t *testing.T) {
+	if err := os.Setenv("GITHUB_OUTPUT", ""); err != nil {
+		t.Fatal(err)
+	}
+	err := SetOutput(map[string]string{"key": "value"})
+	assertError(t, err)
+	assertErrorMessage(t, err, "GITHUB_OUTPUT is not set")
+}
+
+func TestSetOutputSuccess(t *testing.T) {
+	filePath, cleanup := testEnv(t)
+	defer cleanup()
+
+	err := SetOutput(map[string]string{"key": "value"})
+	assertNoError(t, err)
+
+	content := readOutputFile(t, filePath)
+	if !contains(content, "key=value\n") {
+		t.Errorf("expected file content to contain 'key=value\\n' but got '%s'", content)
+	}
+}
+
+func TestSetOutputFileWriteFails(t *testing.T) {
+	if err := os.Setenv("GITHUB_OUTPUT", "/invalid/path"); err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		if err := os.Unsetenv("GITHUB_OUTPUT"); err != nil {
 			t.Fatal(err)
 		}
-		err := SetOutput(map[string]string{"key": "value"})
-		if err == nil {
-			t.Errorf("expected an error but got nil")
-		}
-		if err.Error() != "GITHUB_OUTPUT is not set" {
-			t.Errorf("expected error message 'GITHUB_OUTPUT is not set' but got '%s'", err.Error())
-		}
+	}()
+
+	err := SetOutput(map[string]string{"key": "value"})
+	assertError(t, err)
+	if !contains(err.Error(), "failed to open file") {
+		t.Errorf(
+			"expected error message to contain 'failed to open file' but got '%s'",
+			err.Error(),
+		)
+	}
+}
+
+func TestSetOutputMultiline(t *testing.T) {
+	filePath, cleanup := testEnv(t)
+	defer cleanup()
+
+	multilineValue := "line1\nline2\nline3"
+	err := SetOutput(map[string]string{"multiline": multilineValue})
+	assertNoError(t, err)
+
+	content := readOutputFile(t, filePath)
+	assertContains(t, content, "multiline<<")
+	assertContains(t, content, "line1\nline2\nline3")
+	assertContains(t, content, "ghdelimiter")
+}
+
+func TestSetOutputMixed(t *testing.T) {
+	filePath, cleanup := testEnv(t)
+	defer cleanup()
+
+	err := SetOutput(map[string]string{
+		"single": "value",
+		"multi":  "line1\nline2",
 	})
+	assertNoError(t, err)
 
-	t.Run("GITHUB_OUTPUT set and file write successful", func(t *testing.T) {
-		tempFile, err := os.CreateTemp("", "github_output")
-		if err != nil {
-			t.Fatalf("failed to create temp file: %v", err)
-		}
-		defer func() {
-			if err := os.Remove(tempFile.Name()); err != nil {
-				t.Fatal(err)
-			}
-		}()
-
-		if err := os.Setenv("GITHUB_OUTPUT", tempFile.Name()); err != nil {
-			t.Fatal(err)
-		}
-		defer func() {
-			if err := os.Unsetenv("GITHUB_OUTPUT"); err != nil {
-				t.Fatal(err)
-			}
-		}()
-
-		err = SetOutput(map[string]string{"key": "value"})
-		if err != nil {
-			t.Errorf("expected no error but got %v", err)
-		}
-
-		content, err := os.ReadFile(tempFile.Name())
-		if err != nil {
-			t.Fatalf("failed to read temp file: %v", err)
-		}
-		if !contains(string(content), "key=value\n") {
-			t.Errorf(
-				"expected file content to contain 'key=value\\n' but got '%s'",
-				string(content),
-			)
-		}
-	})
-
-	t.Run("GITHUB_OUTPUT set but file write fails", func(t *testing.T) {
-		if err := os.Setenv("GITHUB_OUTPUT", "/invalid/path"); err != nil {
-			t.Fatal(err)
-		}
-		defer func() {
-			if err := os.Unsetenv("GITHUB_OUTPUT"); err != nil {
-				t.Fatal(err)
-			}
-		}()
-
-		err := SetOutput(map[string]string{"key": "value"})
-		if err == nil {
-			t.Errorf("expected an error but got nil")
-		}
-		if !contains(err.Error(), "failed to open file") {
-			t.Errorf(
-				"expected error message to contain 'failed to open file' but got '%s'",
-				err.Error(),
-			)
-		}
-	})
-
-	t.Run("multiline value with heredoc syntax", func(t *testing.T) {
-		tempFile, err := os.CreateTemp("", "github_output")
-		if err != nil {
-			t.Fatalf("failed to create temp file: %v", err)
-		}
-		defer func() {
-			if err := os.Remove(tempFile.Name()); err != nil {
-				t.Fatal(err)
-			}
-		}()
-
-		if err := os.Setenv("GITHUB_OUTPUT", tempFile.Name()); err != nil {
-			t.Fatal(err)
-		}
-		defer func() {
-			if err := os.Unsetenv("GITHUB_OUTPUT"); err != nil {
-				t.Fatal(err)
-			}
-		}()
-
-		multilineValue := "line1\nline2\nline3"
-		err = SetOutput(map[string]string{"multiline": multilineValue})
-		if err != nil {
-			t.Errorf("expected no error but got %v", err)
-		}
-
-		content, err := os.ReadFile(tempFile.Name())
-		if err != nil {
-			t.Fatalf("failed to read temp file: %v", err)
-		}
-
-		contentStr := string(content)
-		// Check that it uses heredoc syntax
-		if !strings.Contains(contentStr, "multiline<<") {
-			t.Errorf("expected file content to use heredoc syntax but got '%s'", contentStr)
-		}
-		// Check that the multiline value is present
-		if !strings.Contains(contentStr, "line1\nline2\nline3") {
-			t.Errorf(
-				"expected file content to contain the multiline value but got '%s'",
-				contentStr,
-			)
-		}
-		// Check that it has a delimiter
-		if !strings.Contains(contentStr, "ghdelimiter") {
-			t.Errorf("expected file content to contain delimiter but got '%s'", contentStr)
-		}
-	})
-
-	t.Run("mixed single-line and multiline values", func(t *testing.T) {
-		tempFile, err := os.CreateTemp("", "github_output")
-		if err != nil {
-			t.Fatalf("failed to create temp file: %v", err)
-		}
-		defer func() {
-			if err := os.Remove(tempFile.Name()); err != nil {
-				t.Fatal(err)
-			}
-		}()
-
-		if err := os.Setenv("GITHUB_OUTPUT", tempFile.Name()); err != nil {
-			t.Fatal(err)
-		}
-		defer func() {
-			if err := os.Unsetenv("GITHUB_OUTPUT"); err != nil {
-				t.Fatal(err)
-			}
-		}()
-
-		err = SetOutput(map[string]string{
-			"single": "value",
-			"multi":  "line1\nline2",
-		})
-		if err != nil {
-			t.Errorf("expected no error but got %v", err)
-		}
-
-		content, err := os.ReadFile(tempFile.Name())
-		if err != nil {
-			t.Fatalf("failed to read temp file: %v", err)
-		}
-
-		contentStr := string(content)
-		// Check single-line format
-		if !strings.Contains(contentStr, "single=value\n") {
-			t.Errorf("expected file content to contain 'single=value\\n' but got '%s'", contentStr)
-		}
-		// Check multiline format uses heredoc
-		if !strings.Contains(contentStr, "multi<<") {
-			t.Errorf(
-				"expected file content to use heredoc syntax for multiline but got '%s'",
-				contentStr,
-			)
-		}
-		if !strings.Contains(contentStr, "line1\nline2") {
-			t.Errorf(
-				"expected file content to contain the multiline value but got '%s'",
-				contentStr,
-			)
-		}
-	})
+	content := readOutputFile(t, filePath)
+	assertContains(t, content, "single=value\n")
+	assertContains(t, content, "multi<<")
+	assertContains(t, content, "line1\nline2")
 }
 
 func contains(s, substr string) bool {
