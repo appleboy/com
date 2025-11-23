@@ -42,7 +42,7 @@ func main() {
     b = convert.ToBool("")
     fmt.Println(b) // Output: false
     
-    // Convert to int (returns interface{} - nil if conversion fails)
+    // Convert to int (returns any - nil if conversion fails)
     if i := convert.ToInt("123"); i != nil {
         fmt.Println(i) // Output: 123
     }

@@ -7,12 +7,12 @@ import (
 
 func TestToString(t *testing.T) {
 	type args struct {
-		value interface{}
+		value any
 	}
 	tests := []struct {
 		name string
 		args args
-		want interface{}
+		want any
 	}{
 		{
 			name: "int",
@@ -54,12 +54,12 @@ func TestToString(t *testing.T) {
 
 func TestToBool(t *testing.T) {
 	type args struct {
-		value interface{}
+		value any
 	}
 	tests := []struct {
 		name string
 		args args
-		want interface{}
+		want any
 	}{
 		{
 			name: "int",
@@ -87,12 +87,12 @@ func TestToBool(t *testing.T) {
 
 func TestToInt(t *testing.T) {
 	type args struct {
-		value interface{}
+		value any
 	}
 	tests := []struct {
 		name string
 		args args
-		want interface{}
+		want any
 	}{
 		{
 			name: "bool true",
@@ -120,12 +120,12 @@ func TestToInt(t *testing.T) {
 
 func TestToFloat(t *testing.T) {
 	type args struct {
-		value interface{}
+		value any
 	}
 	tests := []struct {
 		name string
 		args args
-		want interface{}
+		want any
 	}{
 		{
 			name: "boolean true",
@@ -196,8 +196,8 @@ func TestConvertBig5ToUTF8(t *testing.T) {
 func TestFromPtr(t *testing.T) {
 	tests := []struct {
 		name string
-		ptr  interface{}
-		want interface{}
+		ptr  any
+		want any
 	}{
 		{
 			name: "int pointer",

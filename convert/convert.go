@@ -13,7 +13,7 @@ import (
 )
 
 // ToString convert any type to string
-func ToString(value interface{}) string {
+func ToString(value any) string {
 	if v, ok := value.(*string); ok {
 		return *v
 	}
@@ -21,7 +21,7 @@ func ToString(value interface{}) string {
 }
 
 // ToBool convert any type to boolean
-func ToBool(value interface{}) bool {
+func ToBool(value any) bool {
 	switch value := value.(type) {
 	case bool:
 		return value
@@ -96,7 +96,7 @@ func isFloat64InRange(value float64) bool {
 }
 
 // ToInt convert any type to int
-func ToInt(value interface{}) interface{} {
+func ToInt(value any) any {
 	switch value := value.(type) {
 	case bool:
 		return boolToInt(value)
@@ -148,7 +148,7 @@ func boolToInt(value bool) int {
 }
 
 // intToInt validates and converts int to int
-func intToInt(value int) interface{} {
+func intToInt(value int) any {
 	if !isInInt32Range(value) {
 		return nil
 	}
@@ -156,7 +156,7 @@ func intToInt(value int) interface{} {
 }
 
 // int64ToInt validates and converts int64 to int
-func int64ToInt(value int64) interface{} {
+func int64ToInt(value int64) any {
 	if !isInt64InRange(value) {
 		return nil
 	}
@@ -164,7 +164,7 @@ func int64ToInt(value int64) interface{} {
 }
 
 // uint32ToInt validates and converts uint32 to int
-func uint32ToInt(value uint32) interface{} {
+func uint32ToInt(value uint32) any {
 	if !isUint32InRange(value) {
 		return nil
 	}
@@ -172,7 +172,7 @@ func uint32ToInt(value uint32) interface{} {
 }
 
 // uint64ToInt validates and converts uint64 to int
-func uint64ToInt(value uint64) interface{} {
+func uint64ToInt(value uint64) any {
 	if !isUint64InRange(value) {
 		return nil
 	}
@@ -180,7 +180,7 @@ func uint64ToInt(value uint64) interface{} {
 }
 
 // float32ToInt validates and converts float32 to int
-func float32ToInt(value float32) interface{} {
+func float32ToInt(value float32) any {
 	if !isFloat32InRange(value) {
 		return nil
 	}
@@ -188,7 +188,7 @@ func float32ToInt(value float32) interface{} {
 }
 
 // float64ToInt validates and converts float64 to int
-func float64ToInt(value float64) interface{} {
+func float64ToInt(value float64) any {
 	if !isFloat64InRange(value) {
 		return nil
 	}
@@ -196,7 +196,7 @@ func float64ToInt(value float64) interface{} {
 }
 
 // stringToInt parses string and converts to int
-func stringToInt(value string) interface{} {
+func stringToInt(value string) any {
 	val, err := strconv.ParseFloat(value, 32)
 	if err != nil {
 		return nil
@@ -205,7 +205,7 @@ func stringToInt(value string) interface{} {
 }
 
 // handleSmallInts handles int8, int16, int32 and their pointers
-func handleSmallInts(value interface{}) interface{} {
+func handleSmallInts(value any) any {
 	switch v := value.(type) {
 	case int8:
 		return int(v)
@@ -224,7 +224,7 @@ func handleSmallInts(value interface{}) interface{} {
 }
 
 // handleSmallUints handles uint, uint8, uint16 and their pointers
-func handleSmallUints(value interface{}) interface{} {
+func handleSmallUints(value any) any {
 	switch v := value.(type) {
 	case uint:
 		if !isUintInRange(v) {
@@ -246,7 +246,7 @@ func handleSmallUints(value interface{}) interface{} {
 }
 
 // ToFloat convert any type to float
-func ToFloat(value interface{}) interface{} {
+func ToFloat(value any) any {
 	switch value := value.(type) {
 	case bool:
 		if value {

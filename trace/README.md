@@ -76,8 +76,8 @@ import (
     "github.com/appleboy/com/trace"
 )
 
-func fetchUserData(userID string) map[string]interface{} {
-    var result map[string]interface{}
+func fetchUserData(userID string) map[string]any {
+    var result map[string]any
     
     trace.ExecuteTime("fetch user "+userID, func() {
         // Simulate API call
