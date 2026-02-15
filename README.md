@@ -1,6 +1,7 @@
 # Common Functions
 
-[![Run Tests](https://github.com/appleboy/com/actions/workflows/go.yml/badge.svg)](https://github.com/appleboy/com/actions/workflows/go.yml)
+[![Lint and Testing](https://github.com/appleboy/com/actions/workflows/testing.yml/badge.svg)](https://github.com/appleboy/com/actions/workflows/testing.yml)
+[![Trivy Security Scan](https://github.com/appleboy/com/actions/workflows/security.yml/badge.svg)](https://github.com/appleboy/com/actions/workflows/security.yml)
 [![GoDoc](https://godoc.org/github.com/appleboy/com?status.svg)](https://godoc.org/github.com/appleboy/com)
 [![codecov](https://codecov.io/gh/appleboy/com/branch/master/graph/badge.svg)](https://codecov.io/gh/appleboy/com)
 [![Go Report Card](https://goreportcard.com/badge/github.com/appleboy/com)](https://goreportcard.com/report/github.com/appleboy/com)
