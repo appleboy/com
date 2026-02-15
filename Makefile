@@ -30,12 +30,12 @@ clean:
 
 ## benchmark: run performance benchmarks for all packages
 benchmark:
-  # Run benchmarks for array package: 5 iterations, 3s each, with memory statistics
-  @$(GO) test -v -benchmem -run=^$ -count=5 -bench=^Benchmark -benchtime=3s ./array/
-  # Run benchmarks for convert package: 5 iterations, 3s each, with memory statistics
-  @$(GO) test -v -benchmem -run=^$ -count=5 -bench=^Benchmark -benchtime=3s ./convert/
-  # Run benchmarks for random package: 5 iterations, 3s each, with memory statistics
-  @$(GO) test -v -benchmem -run=^$ -count=5 -bench=^Benchmark -benchtime=3s ./random/
+	# Run benchmarks for array package: 5 iterations, 3s each, with memory statistics
+	@$(GO) test -v -benchmem -run=^$ -count=5 -bench=^Benchmark -benchtime=3s ./array/
+	# Run benchmarks for convert package: 5 iterations, 3s each, with memory statistics
+	@$(GO) test -v -benchmem -run=^$ -count=5 -bench=^Benchmark -benchtime=3s ./convert/
+	# Run benchmarks for random package: 5 iterations, 3s each, with memory statistics
+	@$(GO) test -v -benchmem -run=^$ -count=5 -bench=^Benchmark -benchtime=3s ./random/
 
 # Declare targets as phony (not actual files) to avoid conflicts
 .PHONY: help test fmt lint clean
