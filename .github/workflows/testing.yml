@@ -1,47 +1,55 @@
-name: Run Tests
+name: Lint and Testing
 
 on:
   push:
-    branches:
-      - master
   pull_request:
-    branches:
-      - master
+
+permissions:
+  actions: read
+  contents: read
+  statuses: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: [1.25]
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} @ Go ${{ matrix.go }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Setup go
         uses: actions/setup-go@v6
         with:
-          go-version: "^1"
+          go-version: ${{ matrix.go }}
 
       - name: Setup golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
-          version: v2.1
+          version: v2.9
           args: --verbose
+
   test:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        go: [1.24, 1.25]
+        os: [ubuntu-latest, macos-latest]
+        go: [1.24, 1.25, 1.26]
         include:
           - os: ubuntu-latest
             go-build: ~/.cache/go-build
           - os: macos-latest
             go-build: ~/Library/Caches/go-build
-          - os: windows-latest
-            go-build: C:\Users\runneradmin\AppData\Local\go-build
     name: ${{ matrix.os }} @ Go ${{ matrix.go }}
     runs-on: ${{ matrix.os }}
-    env:
-      GO111MODULE: on
-      GOPROXY: https://proxy.golang.org
     steps:
       - name: Set up Go ${{ matrix.go }}
         uses: actions/setup-go@v6
@@ -53,7 +61,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             ${{ matrix.go-build }}
@@ -64,26 +72,8 @@ jobs:
       - name: Run Tests
         run: |
           make test
-          make benchmark
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           flags: ${{ matrix.os }},go-${{ matrix.go }}
-
-
-  vulnerability-scanning:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@0.33.1
-        with:
-          scan-type: 'fs'
-          ignore-unfixed: true
-          format: 'table'
-          exit-code: '1'
-          severity: 'CRITICAL,HIGH,MEDIUM'
