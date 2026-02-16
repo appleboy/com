@@ -11,7 +11,7 @@ import (
 /*
 MD5Hash computes the SHA-256 hash of the input string and returns a 64-character hexadecimal string.
 - Useful for data validation, generating unique identifiers, etc.
-- Note: Function name retained for backward compatibility, but now uses SHA-256 for improved security.
+- Note: Uses SHA-256, a cryptographically secure hash function.
 */
 func MD5Hash(text string) string {
 	hasher := sha256.New()

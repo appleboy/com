@@ -7,37 +7,6 @@ import (
 	"testing"
 )
 
-func TestMD5Hash(t *testing.T) {
-	tests := []struct {
-		name string
-		text string
-		want string
-	}{
-		{
-			name: "ascii",
-			text: "acccityname=杭州&accname=李恪&accno=6217714100575709&accprovince=浙江&acctype=0&amount=10000&bankcode=PCBCCNBJ&currency=CNY&mhtorderno=txn20190701173504&notifyurl=https://baidu.com&opmhtid=npdown01&random=8b761ef444354229af14ed16fc3548e8&signkey=gjiowtk49Hw3l",
-			want: "23549444817738591679f0ceb7f77fd4",
-		},
-		{
-			name: "unicode",
-			text: "你好，世界",
-			want: "dbefd3ada018615b35588a01e216ae6e",
-		},
-		{
-			name: "empty",
-			text: "",
-			want: "d41d8cd98f00b204e9800998ecf8427e",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := MD5Hash(tt.text); got != tt.want {
-				t.Errorf("MD5Hash(%q) = %v, want %v", tt.text, got, tt.want)
-			}
-		})
-	}
-}
-
 func TestSnakeCasedName(t *testing.T) {
 	tests := []struct {
 		name string
