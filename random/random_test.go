@@ -65,7 +65,6 @@ func TestString(t *testing.T) {
 	}
 }
 
-//nolint:gosec // G404: Using math/rand for benchmark comparison only, not security-sensitive
 var seededRand = rand.New(
 	rand.NewSource(time.Now().UnixNano()))
 

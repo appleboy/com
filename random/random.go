@@ -50,7 +50,7 @@ func StringWithCharset(byteLen int, charset Charset) (string, error) {
 	}
 	length := len(charset)
 	for i, b := range bytes {
-		bytes[i] = charset[b%byte(length)]
+		bytes[i] = charset[int(b)%length]
 	}
 
 	return bytesconv.BytesToStr(bytes), nil

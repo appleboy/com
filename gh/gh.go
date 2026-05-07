@@ -15,7 +15,8 @@ func SetOutput(data map[string]string) error {
 		return errors.New("GITHUB_OUTPUT is not set")
 	}
 
-	file, err := os.OpenFile(githubOutput, os.O_APPEND|os.O_WRONLY, 0o644)
+	// GITHUB_OUTPUT is provided by the GitHub Actions runner.
+	file, err := os.OpenFile(githubOutput, os.O_APPEND|os.O_WRONLY, 0o644) //nolint:gosec
 	if err != nil {
 		return fmt.Errorf("failed to open file %s: %w", githubOutput, err)
 	}
