@@ -37,6 +37,13 @@ func Remove(filePath string) error {
 	return os.RemoveAll(filePath)
 }
 
+// closeFile closes f, logging any close error with the given role label.
+func closeFile(f *os.File, role string) {
+	if cerr := f.Close(); cerr != nil {
+		fmt.Printf("failed to close %s file: %v\n", role, cerr)
+	}
+}
+
 // Copy files
 // Copy copies a regular file from src to dst. If dst exists, returns error.
 // Uses io.Copy for efficient file transfer.
@@ -53,11 +60,7 @@ func Copy(src, dst string) error {
 	if err != nil {
 		return err
 	}
-	defer func() {
-		if cerr := source.Close(); cerr != nil {
-			fmt.Printf("failed to close source file: %v\n", cerr)
-		}
-	}()
+	defer closeFile(source, "source")
 
 	if _, err := os.Stat(dst); err == nil {
 		return fmt.Errorf("file %s already exists", dst)
@@ -67,11 +70,7 @@ func Copy(src, dst string) error {
 	if err != nil {
 		return err
 	}
-	defer func() {
-		if cerr := destination.Close(); cerr != nil {
-			fmt.Printf("failed to close destination file: %v\n", cerr)
-		}
-	}()
+	defer closeFile(destination, "destination")
 
 	if _, err := io.Copy(destination, source); err != nil {
 		return err
