@@ -5,7 +5,7 @@ High-performance zero-allocation conversion between strings and byte slices for 
 ## Features
 
 - Zero memory allocation conversions
-- Support for Go 1.19+ and Go 1.20+ with optimized implementations
+- Optimized implementation using `unsafe.Slice()` and `unsafe.String()`
 - Significant performance improvement over standard conversions
 - Uses unsafe operations for maximum efficiency
 
@@ -101,9 +101,7 @@ Converts a byte slice to a string without memory allocation.
 
 ## Implementation Details
 
-- **Go 1.20+**: Uses `unsafe.Slice()` and `unsafe.String()` for optimal performance
-- **Go 1.19**: Uses manual unsafe pointer manipulation for compatibility
-- **Build Tags**: Automatically selects the appropriate implementation based on Go version
+- Uses `unsafe.Slice()` and `unsafe.String()` for optimal, allocation-free performance
 - **Safety**: While using unsafe operations, the functions are safe when used correctly
 
 ## Performance
