@@ -37,10 +37,10 @@ func Remove(filePath string) error {
 	return os.RemoveAll(filePath)
 }
 
-// closeFile closes f, printing any close error to stdout with the given role label.
+// closeFile closes f, printing any close error to stderr with the given role label.
 func closeFile(f *os.File, role string) {
 	if cerr := f.Close(); cerr != nil {
-		fmt.Printf("failed to close %s file: %v\n", role, cerr)
+		fmt.Fprintf(os.Stderr, "failed to close %s file: %v\n", role, cerr)
 	}
 }
 
