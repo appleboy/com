@@ -15,6 +15,20 @@ func TestToString(t *testing.T) {
 		want any
 	}{
 		{
+			name: "string",
+			args: args{
+				value: "hello",
+			},
+			want: "hello",
+		},
+		{
+			name: "string pointer",
+			args: args{
+				value: ToPtr("hello"),
+			},
+			want: "hello",
+		},
+		{
 			name: "int",
 			args: args{
 				value: 100,

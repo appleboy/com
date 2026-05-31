@@ -14,7 +14,10 @@ import (
 
 // ToString convert any type to string
 func ToString(value any) string {
-	if v, ok := value.(*string); ok {
+	switch v := value.(type) {
+	case string:
+		return v
+	case *string:
 		return *v
 	}
 	return fmt.Sprintf("%v", value)
@@ -36,24 +39,15 @@ func ToBool(value any) bool {
 	case *string:
 		return ToBool(*value)
 	case float64:
-		if value != 0 {
-			return true
-		}
-		return false
+		return value != 0
 	case *float64:
 		return ToBool(*value)
 	case float32:
-		if value != 0 {
-			return true
-		}
-		return false
+		return value != 0
 	case *float32:
 		return ToBool(*value)
 	case int:
-		if value != 0 {
-			return true
-		}
-		return false
+		return value != 0
 	case *int:
 		return ToBool(*value)
 	}

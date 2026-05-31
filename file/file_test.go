@@ -3,6 +3,7 @@ package file
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -84,6 +85,43 @@ func TestIsFile(t *testing.T) {
 				t.Errorf("IsFile() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func TestCopy(t *testing.T) {
+	dir := t.TempDir()
+	src := filepath.Join(dir, "src.txt")
+	content := []byte("hello world")
+	if err := os.WriteFile(src, content, 0o644); err != nil {
+		t.Fatalf("WriteFile() = %v", err)
+	}
+
+	// successful copy
+	dst := filepath.Join(dir, "dst.txt")
+	if err := Copy(src, dst); err != nil {
+		t.Fatalf("Copy() = %v, want nil", err)
+	}
+	got, err := os.ReadFile(dst)
+	if err != nil {
+		t.Fatalf("ReadFile() = %v", err)
+	}
+	if string(got) != string(content) {
+		t.Errorf("Copy() content = %q, want %q", got, content)
+	}
+
+	// error when destination already exists
+	if err := Copy(src, dst); err == nil {
+		t.Errorf("Copy() to existing destination = nil, want error")
+	}
+
+	// error when source does not exist
+	if err := Copy(filepath.Join(dir, "missing.txt"), filepath.Join(dir, "out.txt")); err == nil {
+		t.Errorf("Copy() from missing source = nil, want error")
+	}
+
+	// error when source is a directory (not a regular file)
+	if err := Copy(dir, filepath.Join(dir, "dir-copy.txt")); err == nil {
+		t.Errorf("Copy() of a directory = nil, want error")
 	}
 }
 
