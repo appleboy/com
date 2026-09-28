@@ -24,7 +24,7 @@ func TestToString(t *testing.T) {
 		{
 			name: "string pointer",
 			args: args{
-				value: ToPtr("hello"),
+				value: new("hello"),
 			},
 			want: "hello",
 		},
@@ -215,7 +215,7 @@ func TestFromPtr(t *testing.T) {
 	}{
 		{
 			name: "int pointer",
-			ptr:  ToPtr(100),
+			ptr:  new(100),
 			want: 100,
 		},
 		{
@@ -225,7 +225,7 @@ func TestFromPtr(t *testing.T) {
 		},
 		{
 			name: "string pointer",
-			ptr:  ToPtr("hello"),
+			ptr:  new("hello"),
 			want: "hello",
 		},
 		{
@@ -235,7 +235,7 @@ func TestFromPtr(t *testing.T) {
 		},
 		{
 			name: "bool pointer",
-			ptr:  ToPtr(true),
+			ptr:  new(true),
 			want: true,
 		},
 		{
@@ -361,4 +361,16 @@ func TestPtrMapToMap(t *testing.T) {
 			t.Errorf("got %v, want %v", valMap, want)
 		}
 	})
+}
+
+func TestToPtr(t *testing.T) {
+	value := 42
+	ptr := ToPtr(value)
+	if ptr == nil || *ptr != value {
+		t.Fatalf("ToPtr(%d) = %v", value, ptr)
+	}
+	*ptr = 100
+	if value != 42 {
+		t.Fatal("modifying the returned pointer changed the original value")
+	}
 }

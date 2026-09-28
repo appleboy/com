@@ -282,7 +282,7 @@ func ToFloat(value any) any {
 //
 // Returns a pointer to the provided value.
 func ToPtr[T any](value T) *T {
-	return &value
+	return new(value)
 }
 
 // FromPtr takes a pointer to a value and returns the value itself.
