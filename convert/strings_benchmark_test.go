@@ -90,7 +90,7 @@ func bytesToString(bytes []byte) (s string) {
 	if len(bytes) == 0 {
 		return s
 	}
-	sh := (*reflect.StringHeader)(unsafe.Pointer(&s)) //nolint
+	sh := (*reflect.StringHeader)(unsafe.Pointer(&s))
 	sh.Data = uintptr(unsafe.Pointer(&bytes[0]))
 	sh.Len = len(bytes)
 	return s

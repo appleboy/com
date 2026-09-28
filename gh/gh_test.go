@@ -9,19 +9,17 @@ import (
 // testEnv sets up a temporary file and environment for testing
 func testEnv(t *testing.T) (string, func()) {
 	t.Helper()
-	tempFile, err := os.CreateTemp("", "github_output")
+	tempFile, err := os.CreateTemp(t.TempDir(), "github_output")
 	if err != nil {
 		t.Fatalf("failed to create temp file: %v", err)
 	}
 
-	if err := os.Setenv("GITHUB_OUTPUT", tempFile.Name()); err != nil {
+	if err := tempFile.Close(); err != nil {
 		t.Fatal(err)
 	}
+	t.Setenv("GITHUB_OUTPUT", tempFile.Name())
 
 	cleanup := func() {
-		if err := os.Unsetenv("GITHUB_OUTPUT"); err != nil {
-			t.Error(err)
-		}
 		if err := os.Remove(tempFile.Name()); err != nil {
 			t.Error(err)
 		}
@@ -73,9 +71,7 @@ func assertContains(t *testing.T, s, substr string) {
 }
 
 func TestSetOutputNotSet(t *testing.T) {
-	if err := os.Setenv("GITHUB_OUTPUT", ""); err != nil {
-		t.Fatal(err)
-	}
+	t.Setenv("GITHUB_OUTPUT", "")
 	err := SetOutput(map[string]string{"key": "value"})
 	assertError(t, err)
 	assertErrorMessage(t, err, "GITHUB_OUTPUT is not set")
@@ -95,14 +91,7 @@ func TestSetOutputSuccess(t *testing.T) {
 }
 
 func TestSetOutputFileWriteFails(t *testing.T) {
-	if err := os.Setenv("GITHUB_OUTPUT", "/invalid/path"); err != nil {
-		t.Fatal(err)
-	}
-	defer func() {
-		if err := os.Unsetenv("GITHUB_OUTPUT"); err != nil {
-			t.Fatal(err)
-		}
-	}()
+	t.Setenv("GITHUB_OUTPUT", "/invalid/path")
 
 	err := SetOutput(map[string]string{"key": "value"})
 	assertError(t, err)

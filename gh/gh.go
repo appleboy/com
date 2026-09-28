@@ -16,7 +16,7 @@ func SetOutput(data map[string]string) error {
 	}
 
 	// GITHUB_OUTPUT is provided by the GitHub Actions runner.
-	file, err := os.OpenFile(githubOutput, os.O_APPEND|os.O_WRONLY, 0o644) //nolint:gosec
+	file, err := os.OpenFile(githubOutput, os.O_APPEND|os.O_WRONLY, 0o644)
 	if err != nil {
 		return fmt.Errorf("failed to open file %s: %w", githubOutput, err)
 	}

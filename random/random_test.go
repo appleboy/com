@@ -66,7 +66,8 @@ func TestString(t *testing.T) {
 }
 
 var seededRand = rand.New(
-	rand.NewSource(time.Now().UnixNano()))
+	rand.NewSource(time.Now().UnixNano()),
+)
 
 func stringWithCharsetOld(length int, charset Charset) string {
 	b := make([]byte, length)
