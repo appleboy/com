@@ -109,6 +109,7 @@ If secure is true, it uses a cryptographically secure random generator (returns 
 If secure is false, it uses a fast, non-cryptographically secure generator (never returns error).
 If charset is empty, Alphanumeric is used.
 */
+//nolint:revive // Keep the exported function name for backward compatibility.
 func RandomString(length int, charset Charset, secure bool) (string, error) {
 	if charset == "" {
 		charset = Alphanumeric

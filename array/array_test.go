@@ -21,7 +21,7 @@ func BenchmarkContains(b *testing.B) {
 			name: "100 fields (int, key exists)",
 			slice: func() []int {
 				s := make([]int, 100)
-				for i := 0; i < 100; i++ {
+				for i := range 100 {
 					s[i] = i
 				}
 				return s
@@ -32,7 +32,7 @@ func BenchmarkContains(b *testing.B) {
 			name: "1000 fields (int, key exists)",
 			slice: func() []int {
 				s := make([]int, 1000)
-				for i := 0; i < 1000; i++ {
+				for i := range 1000 {
 					s[i] = i
 				}
 				return s

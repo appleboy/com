@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/appleboy/com/bytesconv"
+
 	"golang.org/x/text/encoding/traditionalchinese"
 	"golang.org/x/text/transform"
 )
@@ -309,6 +310,8 @@ func FromPtr[T any](ptr *T) T {
 //	big5Str := "\xa4\xa4\xa4\xe5" // "中文" in Big5 encoding
 //	utf8Str := ConvertBig5ToUTF8(big5Str)
 //	fmt.Println(utf8Str) // Output: 中文
+//
+//nolint:revive // Keep the exported function name for backward compatibility.
 func ConvertBig5ToUTF8(s string) string {
 	reader := transform.NewReader(
 		strings.NewReader(s),
